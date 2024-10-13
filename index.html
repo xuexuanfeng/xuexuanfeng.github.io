@@ -152,28 +152,33 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-firsttest" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-unity-3dhud" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2024/10/12/firsttest/">firsttest</a>
+      <a class="article-title" href="/2024/10/13/unity-3dhud/">unity_3dhud</a>
     </h1>
   
 
         
-        <a href="/2024/10/12/firsttest/" class="archive-article-date">
-  	<time datetime="2024-10-12T15:03:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-10-12</time>
+        <a href="/2024/10/13/unity-3dhud/" class="archive-article-date">
+  	<time datetime="2024-10-13T14:22:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-10-13</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="1111"><a href="#1111" class="headerlink" title="1111"></a>1111</h1><h2 id="1111-1"><a href="#1111-1" class="headerlink" title="1111"></a>1111</h2><p><strong>tast</strong></p>
-<hr>
+        <h1 id="UNITY-3D-HUD-的优化以及原理"><a href="#UNITY-3D-HUD-的优化以及原理" class="headerlink" title="UNITY  3D HUD 的优化以及原理"></a>UNITY  3D HUD 的优化以及原理</h1><h3 id="事情经过"><a href="#事情经过" class="headerlink" title="事情经过"></a>事情经过</h3><p>&emsp;&emsp;前一阵面试的时候被面试官问道3D HUD 的实现原理，将2D,3D实现原理自信的阐述了一番，以为万事大吉！不料面试官提问：如果3DHUD在角色旋转的时候变糊这是为什么？  说实话应为没有实操过，并没有遇到这个问题，一顿已读乱回，接下来就看看到底是为什么。</p>
+<p>&emsp;&emsp;B站搜索发现猛男demo传送门  <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1cS4y1M7JL/?spm_id_from=333.880.my_history.page.click&vd_source=757af868ca167689ee49a2bde553ef7f">https://www.bilibili.com/video/BV1cS4y1M7JL/?spm_id_from=333.880.my_history.page.click&amp;vd_source=757af868ca167689ee49a2bde553ef7f</a></p>
+<p>&emsp;&emsp;其实很简单，主要的核心就是这几行代码,原来一直以为hud做look摄像机就可以了，其实是不对的，如果使用lookat那么在有些角度hud会又倾斜还是会给人一种3D感，将rotation设置与camera一样则可以完美的解决这一个问题</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// slider.direction = Slider.Direction.RightToLeft;</span><br><span class="line">// slider.transform.LookAt(Camera.main.transform.position);</span><br><span class="line"></span><br><span class="line">slider.direction = Slider.Direction.LeftToRight;</span><br><span class="line">slider.transform.rotation = Camera.main.transform.rotation;</span><br></pre></td></tr></table></figure>
+<p>unity层级结构如下<br><img src="/img/20241013224055.png" alt="unity层级结构如下"></p>
+<p>&emsp;&emsp;项目运行一段时间之后发现，的确图片会出现变糊的现象，经过排查，判断应该是cube旋转之后影响到了hud的rotation，然后hud由于mono脚本也在不停的改变其rotation，如果有一针cube旋转的执行时序慢于mono脚本。那么就会出现抖动的情况，我估计面试官想表达的就是这个。累了，但愿天堂没有面试。</p>
+<p><a target="_blank" rel="noopener" href="https://gitee.com/WondrousWisdomcard/unity3d-homework/tree/master/Homework06">测试项目地址</a></p>
 
       
 
@@ -187,7 +192,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">test</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">unity优化</a>
         		</li>
       		
 		</ul>
@@ -197,7 +202,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2024/10/12/firsttest/">展开全文 >></a>
+          <a class="article-more-a" href="/2024/10/13/unity-3dhud/">展开全文 >></a>
         </p>
       
 
@@ -395,7 +400,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">test</a>
+                <a href="javascript:void(0)" class="js-tag color3">unity优化</a>
               </li>
             
             <div class="clearfix"></div>
