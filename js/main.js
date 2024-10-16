@@ -926,6 +926,59 @@ document.addEventListener('DOMContentLoaded', () => {
     forPostFn()
     switchComments()
     openMobileMenu()
+    updateSiteInfo()
+  }
+
+  const updateSiteInfo = () => {
+    var htag = document.getElementById('site-title');
+    var infoAry = htag.getAttribute('info').split(";")
+    shuffle(infoAry)
+    console.log(infoAry)
+    var index = 1;
+    htag.innerHTML = infoAry[0];
+    setInterval(function(){
+      
+      htag.classList.remove("site-titlecss")
+      void htag.offsetWidth;  // 强制浏览器重新渲染元素
+      htag.innerHTML = infoAry[index];
+      htag.classList.add("site-titlecss")
+      
+      index = (index + 1) % infoAry.length;
+
+      if(index == 0)
+        shuffle(infoAry)
+
+    }, 4000); // 每隔2秒自动切换
+
+    // var texts = ["轮播文字内容1", "轮播文字内容2", "轮播文字内容3"]; // 定义要轮播的文字内容数组
+    // var index = 0;
+    // setInterval(function(){
+    //   var htag = document.getElementById('site-title');
+    //   console.log(htag.innerHTML)
+    //   htag.innerHTML = texts[index];
+      
+    //   index = (index + 1) % texts.length; // 循环切换到下一条文字
+    // }, 2000); // 每隔2秒自动切换
+  }
+
+  function shuffle(array) {
+    let currentIndex = array.length;
+    let temporaryValue, randomIndex;
+   
+    // 当还有元素时，继续进行
+    while (0 !== currentIndex) {
+   
+      // 随机选取索引
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+   
+      // 交换元素
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+   
+    return array; // 返回洗牌后的数组
   }
 
   btf.addGlobalFn('pjaxComplete', refreshFn, 'refreshFn')
