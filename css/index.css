@@ -342,7 +342,7 @@ template {
 #nav.show {
   animation: header-effect 1s;
 }
-#site-title,
+.site-titlecss,
 #site-subtitle {
   animation: titleScale 1s;
 }
