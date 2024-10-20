@@ -6,7 +6,7 @@
   <link href="http://xuexuanfeng.github.io/atom.xml" rel="self"/>
   
   <link href="http://xuexuanfeng.github.io/"/>
-  <updated>2024-10-16T15:22:52.556Z</updated>
+  <updated>2024-10-20T15:59:19.456Z</updated>
   <id>http://xuexuanfeng.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Unity微信小游戏刘海屏适配</title>
+    <link href="http://xuexuanfeng.github.io/2024/10/20/Unity%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F%E5%88%98%E6%B5%B7%E5%B1%8F%E9%80%82%E9%85%8D/"/>
+    <id>http://xuexuanfeng.github.io/2024/10/20/Unity%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F%E5%88%98%E6%B5%B7%E5%B1%8F%E9%80%82%E9%85%8D/</id>
+    <published>2024-10-20T15:38:22.000Z</published>
+    <updated>2024-10-20T15:59:19.456Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Unity原生刘海屏适配方案"><a href="#Unity原生刘海屏适配方案" class="headerlink" title="Unity原生刘海屏适配方案"></a>Unity原生刘海屏适配方案</h1><p>网络文章<a href="https://blog.uwa4d.com/archives/USparkle_UGUI-NGUI.html">(文档链接)</a>，给出了UGUI和NGUI的刘海屏适配方案。主要还是通过获取到的safeArea区域的数据，对锚点做偏移处理。新版本的unity可以直接通过Screen.SafeArea来获取安全区域，并不需要文章内的这么麻烦通过原生底层获取。</p><p>UGUI比较简单，在panel上面挂载mono脚本，对RectTransform的anchorMin和anchorMax进行修改即可。要注意的是Panel节点的锚点需要选择右下角的那个撑满选项，并且四个角的锚点都为0，不然的话效果会不符合预期。<br><img src="/img/20241020234707.png" alt="锚点选项"></p><p>NGUI就比较复杂，需要修改NGUI的源码，大致原理都差不多。</p><h1 id="Unity小游戏刘海屏适配方案"><a href="#Unity小游戏刘海屏适配方案" class="headerlink" title="Unity小游戏刘海屏适配方案"></a>Unity小游戏刘海屏适配方案</h1><p>微信小游戏文档给出了获取safeArea的方案<a href="https://wechat-miniprogram.github.io/minigame-unity-webgl-transform/Design/fixScreen.html">(文档链接)</a></p><p>但是有一点比较奇怪的是，WX.GetWindowInfo().windowWidth与unity中的Screen.width并不相等。</p><p>如图<br><img src="/img/20241020235412.png" alt="小游戏输入日志"></p><p>但是通过计算可以知道WX.GetWindowInfo().windowWidth和Screen.width的比例与WX.GetWindowInfo().windowHeight和Screen.height是相等的，都是0.333333，所以可以通过这个参数因子反向推得得到类似于Screen.SafeArea的结果。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public static Rect WeChatASafeArea;</span><br><span class="line">public static Rect SafeArea</span><br><span class="line">    &#123;</span><br><span class="line">        get</span><br><span class="line">        &#123;</span><br><span class="line"><span class="comment">#if !UNITY_EDITOR &amp;&amp; USE_WECHATMINISDK</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(WeChatASafeArea.width == 0 &amp;&amp; WeChatASafeArea.height == 0)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"><span class="built_in">float</span> radio = (<span class="built_in">float</span>)WX.GetWindowInfo().windowWidth / Screen.width;</span><br><span class="line"></span><br><span class="line">    WeChatASafeArea = new Rect();</span><br><span class="line">WeChatASafeArea.width = (<span class="built_in">float</span>)WX.GetWindowInfo().safeArea.width / radio;</span><br><span class="line">    WeChatASafeArea.height = (<span class="built_in">float</span>)WX.GetWindowInfo().safeArea.height / radio;</span><br><span class="line">WeChatASafeArea.x = (<span class="built_in">float</span>)WX.GetWindowInfo().safeArea.left / radio;</span><br><span class="line">WeChatASafeArea.y = ((float)WX.GetWindowInfo().windowHeight - (float)WX.GetWindowInfo().safeArea.height)/radio;</span><br><span class="line"></span><br><span class="line">UnityEngine.Debug.Log(&quot;WeChatASafeArea---------&quot;+WeChatASafeArea);</span><br><span class="line">&#125;</span><br><span class="line">return WeChatASafeArea;</span><br><span class="line">#else</span><br><span class="line"></span><br><span class="line">            return Screen.safeArea;</span><br><span class="line">#endif</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure><p>导出小游戏后完美解决<br><img src="/img/20241020235827.png" alt="微信开发者工具截图"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;Unity原生刘海屏适配方案&quot;&gt;&lt;a href=&quot;#Unity原生刘海屏适配方案&quot; class=&quot;headerlink&quot; title=&quot;Unity原生刘海屏适配方案&quot;&gt;&lt;/a&gt;Unity原生刘海屏适配方案&lt;/h1&gt;&lt;p&gt;网络文章&lt;a href=&quot;https://b</summary>
+      
+    
+    
+    
+    
+    <category term="Unity微信小游戏" scheme="http://xuexuanfeng.github.io/tags/Unity%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>Unity微信小游戏的bundle加载流程</title>
