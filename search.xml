@@ -4,11 +4,30 @@
   
     
     <entry>
+      <title>Ilruntime调试环境搭建</title>
+      <link href="/2024/10/28/Ilruntime%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"/>
+      <url>/2024/10/28/Ilruntime%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Ilruntime调试环境搭建"><a href="#Ilruntime调试环境搭建" class="headerlink" title="Ilruntime调试环境搭建"></a>Ilruntime调试环境搭建</h1><p>Ilruntime的安装教程地址<a href="https://ourpalm.github.io/ILRuntime/public/v1/guide/tutorial.html">(点击跳转)</a></p><p>目前看来Ilruntime的调试与xlua相似，都是unity安装完运行环境之后，编辑器内安装对应插件Ilruntime Debugger。据说2.0之前的版本调试插件要上github官网下载对应的插件，2.0以上的直接VS2022扩展里面下载就行，端口就用56000，主要还是StartDebugService调用的时机很关键，太早调用的话会导致打不到断点</p><p>调试器问题解答<a href="https://blog.csdn.net/qq_39162826/article/details/128221561">(点击跳转)</a></p><p>调试条件</p><ol><li><p>安装ILRuntime的VS调试插件（Github上可下载）</p></li><li><p>确定启用DEBUG宏和禁用DISABLE_ILRUNTIME_DEBUG宏</p></li><li><p>检查ILRDomain.DebugService.StartDebugService(56000)是否启用</p></li><li><p>检查PDB是否被加载</p></li><li><p>检查DLL是否为DEBUG版本（提高调试准确性）</p></li></ol><p>以上条件满足还可以支持真机调试</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Unity插件工具相关 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>IlRuntime小游戏转换</title>
       <link href="/2024/10/22/IlRuntime%E5%B0%8F%E6%B8%B8%E6%88%8F%E8%BD%AC%E6%8D%A2/"/>
       <url>/2024/10/22/IlRuntime%E5%B0%8F%E6%B8%B8%E6%88%8F%E8%BD%AC%E6%8D%A2/</url>
       
-        <content type="html"><![CDATA[<h1 id="IlRuntime小游戏转换工作记录"><a href="#IlRuntime小游戏转换工作记录" class="headerlink" title="IlRuntime小游戏转换工作记录"></a>IlRuntime小游戏转换工作记录</h1><p>day1 项目移除ILRuntime，提升性能</p>]]></content>
+        <content type="html"><![CDATA[<h1 id="IlRuntime小游戏转换工作记录"><a href="#IlRuntime小游戏转换工作记录" class="headerlink" title="IlRuntime小游戏转换工作记录"></a>IlRuntime小游戏转换工作记录</h1><p>day1 项目移除ILRuntime，提升性能</p><p>day2 config文件资源打包成zip，执行预加载，之后统一解析数据</p><p>day3 FGUI的package数据加入预加载中，调用UIPACKAGE中的异步加载，但是界面没有打开，spineanimation那个玩意儿会报空，得找出解决方案<br>目前看来有三个解决方案：<br>先加载完必要的资源然后打开界面—–有很多getwindow之后的调用，而且数量众多<br>使用异步加载界面，然01元素等待加载——日前流程没有跑通，而且spineneanimat1on会报空<br>使用adduisource——目前看来他可以挡住init，但是又很多外部的地方会直接调用界面的public函数</p><p>day4 主要还是使用使用异步加载界面来解决同步加载的问题，主要聚焦于主流程的前两个界面，第一个过场动画已经适配异步了，主界面待调试，目前遇到两个问题，第一个是有很多同步的方式使用spine动画，目前的方案是再3Dloader类中加入委托，将所有需要执行的操作存入委托中，资源加载完毕之后派发事件，通知3DLOADER统一执行委托。但是又发现了一个问题，有很多地方getwindow之后会直接调用界面的内部函数，由于是同步的流程，会导致异步加载完没有完成，panel为空导致报错。</p><p>day5 早上对其了下spine动画和fgui的异步加载，目前只用createobject就行，他结构初始化和资源加载本身就是分开的逻辑互不影响，这么看来fgui同步改异步还是很方便的，但是进入主界面之后有些spine动画一会显示一会不显示。debug之后发现之前使用的事件派发更新显示逻辑因为Gloader再初始化的时候会调用dispose接口，这就导致了有时候消息发过来了，但是事件侦听被remove了，随即改成了packageitem再gloader注册的时候加入委托对象，这样的好处是packageitem再异步加载完成之后可以精确的派发到指定的gloader对象，而不用像事件派发到每个gloader对象然后在做数据判断。<br>最后开始游戏的时候还会黑屏，需要原项目工程导入ilruntime的debug插件进行逻辑对比。</p>]]></content>
       
       
       
