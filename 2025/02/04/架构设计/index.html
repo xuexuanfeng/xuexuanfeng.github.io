@@ -1,0 +1,346 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>架构设计 | 存钱买电瓶车创业的猛男程序员</title><meta name="author" content="xuexuanfeng"><meta name="copyright" content="xuexuanfeng"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="架构设计架构设计的理论框架  三种需要架构的情景 一个系统，构成复杂，需要多个子系统协同以实现系统目标  一个系统，他由多个功能相似的模块构成，模块内的功能重复度很高，且容易出错。  一个系统，规模太大，需要多人协作完成，需要保证多人协作的效率和稳定性。   三种架构设计的思维 分层思维  分治思维  演化思维   架构设计时的考量点 游戏引擎的选择  UI的事件系统  AI行为算法  数据如何获">
+<meta property="og:type" content="article">
+<meta property="og:title" content="架构设计">
+<meta property="og:url" content="http://xuexuanfeng.github.io/2025/02/04/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/index.html">
+<meta property="og:site_name" content="存钱买电瓶车创业的猛男程序员">
+<meta property="og:description" content="架构设计架构设计的理论框架  三种需要架构的情景 一个系统，构成复杂，需要多个子系统协同以实现系统目标  一个系统，他由多个功能相似的模块构成，模块内的功能重复度很高，且容易出错。  一个系统，规模太大，需要多人协作完成，需要保证多人协作的效率和稳定性。   三种架构设计的思维 分层思维  分治思维  演化思维   架构设计时的考量点 游戏引擎的选择  UI的事件系统  AI行为算法  数据如何获">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://xuexuanfeng.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2025-02-04T07:01:41.000Z">
+<meta property="article:modified_time" content="2025-02-04T07:41:59.533Z">
+<meta property="article:author" content="xuexuanfeng">
+<meta property="article:tag" content="架构设计">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xuexuanfeng.github.io/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://xuexuanfeng.github.io/2025/02/04/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '架构设计',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-02-04 15:41:59'
+}</script><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="存钱买电瓶车创业的猛男程序员" type="application/atom+xml">
+</head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">存钱买电瓶车创业的猛男程序员</span></a><a class="nav-page-title" href="/"><span class="site-name">架构设计</span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">架构设计</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-02-04T07:01:41.000Z" title="Created 2025-02-04 15:01:41">2025-02-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-02-04T07:41:59.533Z" title="Updated 2025-02-04 15:41:59">2025-02-04</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="架构设计"><a href="#架构设计" class="headerlink" title="架构设计"></a>架构设计</h1><pre><code>架构设计的理论框架
+</code></pre>
+<h2 id="三种需要架构的情景"><a href="#三种需要架构的情景" class="headerlink" title="三种需要架构的情景"></a>三种需要架构的情景</h2><ol>
+<li><p>一个系统，构成复杂，需要多个子系统协同以实现系统目标</p>
+</li>
+<li><p>一个系统，他由多个功能相似的模块构成，模块内的功能重复度很高，且容易出错。</p>
+</li>
+<li><p>一个系统，规模太大，需要多人协作完成，需要保证多人协作的效率和稳定性。</p>
+</li>
+</ol>
+<h2 id="三种架构设计的思维"><a href="#三种架构设计的思维" class="headerlink" title="三种架构设计的思维"></a>三种架构设计的思维</h2><ol>
+<li><p>分层思维</p>
+</li>
+<li><p>分治思维</p>
+</li>
+<li><p>演化思维</p>
+</li>
+</ol>
+<h2 id="架构设计时的考量点"><a href="#架构设计时的考量点" class="headerlink" title="架构设计时的考量点"></a>架构设计时的考量点</h2><ul>
+<li><p>游戏引擎的选择</p>
+</li>
+<li><p>UI的事件系统</p>
+</li>
+<li><p>AI行为算法</p>
+</li>
+<li><p>数据如何获取和存储</p>
+</li>
+<li><p>场景如何拆分</p>
+</li>
+<li><p>是否需要将资源分离出去</p>
+</li>
+<li><p>长连接短连接的选择</p>
+</li>
+<li><p>服务器语言的选择</p>
+</li>
+<li><p>使用关系型数据库还是加入cache机制</p>
+</li>
+<li><p>网络协议是protobuf，json，xml的选择</p>
+</li>
+</ul>
+<h2 id="架构的五种能力"><a href="#架构的五种能力" class="headerlink" title="架构的五种能力"></a>架构的五种能力</h2><ol>
+<li><p>承载力</p>
+</li>
+<li><p>可扩展性</p>
+</li>
+<li><p>易用性</p>
+</li>
+<li><p>可伸缩力</p>
+</li>
+<li><p>容错力以及错误的感知力</p>
+</li>
+</ol>
+<h2 id="基本的架构思维"><a href="#基本的架构思维" class="headerlink" title="基本的架构思维"></a>基本的架构思维</h2><ul>
+<li><p>算法和数据结构</p>
+</li>
+<li><p>软件工程</p>
+</li>
+<li><p>面向对象程序设计</p>
+</li>
+<li><p>抽象：分层、分治、演化</p>
+</li>
+</ul>
+<h2 id="前端架构的思考点"><a href="#前端架构的思考点" class="headerlink" title="前端架构的思考点"></a>前端架构的思考点</h2><ol>
+<li>用户体验</li>
+</ol>
+<ul>
+<li><p>如何让游戏加载更快</p>
+</li>
+<li><p>如何制作更绚丽的特效</p>
+</li>
+<li><p>如何减少DrawCall</p>
+</li>
+<li><p>如何减少CPU的负载</p>
+</li>
+<li><p>如何最快的响应用户的操作</p>
+</li>
+<li><p>如何适应更多的手机</p>
+</li>
+</ul>
+<ol start="2">
+<li><p>操作系统</p>
+</li>
+<li><p>游戏引擎</p>
+</li>
+<li><p>应用层框架</p>
+</li>
+<li><p>业务逻辑</p>
+</li>
+</ol>
+<h2 id="UI前端框架的技术栈"><a href="#UI前端框架的技术栈" class="headerlink" title="UI前端框架的技术栈"></a>UI前端框架的技术栈</h2><ol>
+<li><p>UI框架</p>
+</li>
+<li><p>主要逻辑框架</p>
+</li>
+</ol>
+<ul>
+<li><p>编辑器</p>
+</li>
+<li><p>角色行为框架</p>
+</li>
+<li><p>AI框架</p>
+</li>
+<li><p>地图场景与寻路框架</p>
+</li>
+<li><p>Shader与特效</p>
+</li>
+<li><p>设备平台</p>
+</li>
+</ul>
+<ol start="3">
+<li>资源管理</li>
+</ol>
+<ul>
+<li><p>Assetbundle资源管理</p>
+</li>
+<li><p>prefab资源管理</p>
+</li>
+</ul>
+<ol start="4">
+<li>数据管理</li>
+</ol>
+<ul>
+<li><p>内存数据管理</p>
+</li>
+<li><p>外部数据管理</p>
+</li>
+</ul>
+<ol start="5">
+<li>网络</li>
+</ol>
+<h2 id="各个模块的拆分"><a href="#各个模块的拆分" class="headerlink" title="各个模块的拆分"></a>各个模块的拆分</h2><ol>
+<li>数据表</li>
+</ol>
+<ul>
+<li>XLS导为二进制文件还是json或者其他格式，读取接口和解析接口的定义</li>
+</ul>
+<ol start="2">
+<li>UI层</li>
+</ol>
+<ul>
+<li><p>使用UGUI,NGUI,FGUI框架</p>
+</li>
+<li><p>界面基类，界面管理，输入事件封装，自定义各类通用组件</p>
+</li>
+</ul>
+<ol start="3">
+<li>外部资源管理</li>
+</ol>
+<ul>
+<li>是否使用AssetBundle，AssetBundle资源分类，AssetBundle资源之间的依赖关系，加载与释放AssetBundle的管理，AssetBundle加密</li>
+</ul>
+<ol start="4">
+<li>AI层</li>
+</ol>
+<ul>
+<li>使用状态机还是行为树或是其他，状态机或行为树接口实现，AI可视化工具，AI扩展接口</li>
+</ul>
+<ol start="5">
+<li>地形地图</li>
+</ol>
+<ul>
+<li>地图是2D还是3D，场景编辑器的结构，是否需要mesh合并，场景内的大小物件区别对待，大地形在游戏里该怎么逐步显示，是否需要划分区块。</li>
+</ul>
+<ol start="6">
+<li>寻路与网格</li>
+</ol>
+<ul>
+<li><p>使用A星还是跳点算法还是其他</p>
+</li>
+<li><p>使用网格栅格还是三角形</p>
+</li>
+<li><p>长距离寻路的解决方案</p>
+</li>
+<li><p>地图数据管理</p>
+</li>
+</ul>
+<ol start="7">
+<li>常用库</li>
+</ol>
+<ul>
+<li>时间函数、数学函数、数字变量加密封装、坐标转换函数、Debug调试工具、各大逻辑系统通用工具</li>
+</ul>
+<ol start="8">
+<li>角色行为控制</li>
+</ol>
+<ul>
+<li>人物移动处理方案，摄像机的碰撞检测，动画特效编辑器，技能编辑器、行为流的建立</li>
+</ul>
+<ol start="9">
+<li>2D动画控制</li>
+</ol>
+<ul>
+<li>动画组件封装，2D动画的制作流程，2D图合并为图集</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://xuexuanfeng.github.io">xuexuanfeng</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://xuexuanfeng.github.io/2025/02/04/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">http://xuexuanfeng.github.io/2025/02/04/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">架构设计</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="next-post pull-full" href="/2025/01/10/TextMeshPro%E4%B8%AD%E6%96%87%E5%AD%97%E4%BD%93%E7%9A%84%E5%A4%84%E7%90%86/" title="TextMeshPro中文字体的处理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">TextMeshPro中文字体的处理</div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xuexuanfeng</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">15</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xuexuanfeng/"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">炸裂的2.5次元空间</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.</span> <span class="toc-text">架构设计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E9%9C%80%E8%A6%81%E6%9E%B6%E6%9E%84%E7%9A%84%E6%83%85%E6%99%AF"><span class="toc-number">1.1.</span> <span class="toc-text">三种需要架构的情景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%9A%84%E6%80%9D%E7%BB%B4"><span class="toc-number">1.2.</span> <span class="toc-text">三种架构设计的思维</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E6%97%B6%E7%9A%84%E8%80%83%E9%87%8F%E7%82%B9"><span class="toc-number">1.3.</span> <span class="toc-text">架构设计时的考量点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84%E7%9A%84%E4%BA%94%E7%A7%8D%E8%83%BD%E5%8A%9B"><span class="toc-number">1.4.</span> <span class="toc-text">架构的五种能力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%9A%84%E6%9E%B6%E6%9E%84%E6%80%9D%E7%BB%B4"><span class="toc-number">1.5.</span> <span class="toc-text">基本的架构思维</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF%E6%9E%B6%E6%9E%84%E7%9A%84%E6%80%9D%E8%80%83%E7%82%B9"><span class="toc-number">1.6.</span> <span class="toc-text">前端架构的思考点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UI%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6%E7%9A%84%E6%8A%80%E6%9C%AF%E6%A0%88"><span class="toc-number">1.7.</span> <span class="toc-text">UI前端框架的技术栈</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%84%E4%B8%AA%E6%A8%A1%E5%9D%97%E7%9A%84%E6%8B%86%E5%88%86"><span class="toc-number">1.8.</span> <span class="toc-text">各个模块的拆分</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/02/04/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="架构设计">架构设计</a><time datetime="2025-02-04T07:01:41.000Z" title="Created 2025-02-04 15:01:41">2025-02-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/10/TextMeshPro%E4%B8%AD%E6%96%87%E5%AD%97%E4%BD%93%E7%9A%84%E5%A4%84%E7%90%86/" title="TextMeshPro中文字体的处理">TextMeshPro中文字体的处理</a><time datetime="2025-01-10T15:38:21.000Z" title="Created 2025-01-10 23:38:21">2025-01-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/19/%E6%8D%8F%E8%84%B8%E7%B3%BB%E7%BB%9F/" title="捏脸系统">捏脸系统</a><time datetime="2024-12-19T15:37:42.000Z" title="Created 2024-12-19 23:37:42">2024-12-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/18/Dots%E5%AD%A6%E4%B9%A0%E5%BF%83%E5%BE%97/" title="Dots学习心得">Dots学习心得</a><time datetime="2024-12-18T15:47:31.000Z" title="Created 2024-12-18 23:47:31">2024-12-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/08/%E7%BD%91%E7%90%83%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/" title="网球游戏开发">网球游戏开发</a><time datetime="2024-12-08T15:59:13.000Z" title="Created 2024-12-08 23:59:13">2024-12-08</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By xuexuanfeng</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
