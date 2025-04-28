@@ -1,0 +1,211 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>设计模式的应用场景 | 存钱买电瓶车创业的猛男程序员</title><meta name="author" content="xuexuanfeng"><meta name="copyright" content="xuexuanfeng"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、创建型模式（封装对象的创建）单例模式需要全局唯一实例（如日志管理器、配置中心、数据库连接池）。 1234public sealed class Singleton &#123;     private static Singleton _instance; &#125;  工厂方法创建对象时需依赖子类决定具体类型（如不同数据库驱动、UI 控件的动态生成）。 1234abstract class">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式的应用场景">
+<meta property="og:url" content="http://xuexuanfeng.github.io/2025/04/18/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/index.html">
+<meta property="og:site_name" content="存钱买电瓶车创业的猛男程序员">
+<meta property="og:description" content="一、创建型模式（封装对象的创建）单例模式需要全局唯一实例（如日志管理器、配置中心、数据库连接池）。 1234public sealed class Singleton &#123;     private static Singleton _instance; &#125;  工厂方法创建对象时需依赖子类决定具体类型（如不同数据库驱动、UI 控件的动态生成）。 1234abstract class">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://xuexuanfeng.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2025-04-18T03:17:58.000Z">
+<meta property="article:modified_time" content="2025-04-18T03:58:14.497Z">
+<meta property="article:author" content="xuexuanfeng">
+<meta property="article:tag" content="架构设计">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xuexuanfeng.github.io/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://xuexuanfeng.github.io/2025/04/18/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '设计模式的应用场景',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-04-18 11:58:14'
+}</script><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="存钱买电瓶车创业的猛男程序员" type="application/atom+xml">
+</head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">存钱买电瓶车创业的猛男程序员</span></a><a class="nav-page-title" href="/"><span class="site-name">设计模式的应用场景</span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">设计模式的应用场景</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-04-18T03:17:58.000Z" title="Created 2025-04-18 11:17:58">2025-04-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-04-18T03:58:14.497Z" title="Updated 2025-04-18 11:58:14">2025-04-18</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="一、创建型模式（封装对象的创建）"><a href="#一、创建型模式（封装对象的创建）" class="headerlink" title="一、创建型模式（封装对象的创建）"></a>一、创建型模式（封装对象的创建）</h1><h2 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h2><p>需要全局唯一实例（如日志管理器、配置中心、数据库连接池）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public sealed class Singleton </span><br><span class="line">&#123; </span><br><span class="line">    private static Singleton _instance; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="工厂方法"><a href="#工厂方法" class="headerlink" title="工厂方法"></a>工厂方法</h2><p>创建对象时需依赖子类决定具体类型（如不同数据库驱动、UI 控件的动态生成）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">abstract class Creator </span><br><span class="line">&#123; </span><br><span class="line">    public abstract IProduct FactoryMethod(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="抽象工厂"><a href="#抽象工厂" class="headerlink" title="抽象工厂"></a>抽象工厂</h2><p>创建一组相关或依赖的对象（如跨平台 UI 组件库：Windows&#x2F;Mac 的按钮、文本框）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">interface IGUIFactory </span><br><span class="line">&#123; </span><br><span class="line">    IButton CreateButton(); </span><br><span class="line">    ITextBox CreateTextBox(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="建造者模式"><a href="#建造者模式" class="headerlink" title="建造者模式"></a>建造者模式</h2><p>分步骤构建复杂对象（如生成 XML&#x2F;JSON 文档、配置 HTTP 请求头）。</p>
+<p>StringBuilder 类的链式调用</p>
+<h2 id="原型模式"><a href="#原型模式" class="headerlink" title="原型模式"></a>原型模式</h2><p>通过克隆已有对象创建新对象，避免重复初始化（如游戏中的敌人复制、配置模板）。</p>
+<p>实现 ICloneable 接口：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public object <span class="function"><span class="title">Clone</span></span>() </span><br><span class="line">&#123; </span><br><span class="line">    <span class="built_in">return</span> MemberwiseClone(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="二、结构型模式（处理对象间的组合关系）"><a href="#二、结构型模式（处理对象间的组合关系）" class="headerlink" title="二、结构型模式（处理对象间的组合关系）"></a>二、结构型模式（处理对象间的组合关系）</h1><h2 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h2><p>将不兼容接口转换为客户端期望的接口（如旧系统接口适配新框架）。</p>
+<p>包装第三方库的类：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">class LegacyAdapter : INewInterface </span><br><span class="line">&#123; </span><br><span class="line">    private Legacy _legacy; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="桥接模式"><a href="#桥接模式" class="headerlink" title="桥接模式"></a>桥接模式</h2><p>分离抽象与实现，支持多维变化（如不同图形渲染API：OpenGL&#x2F;DirectX）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">abstract class Shape</span><br><span class="line">&#123; </span><br><span class="line">    protected IRenderer _renderer; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="组合模式"><a href="#组合模式" class="headerlink" title="组合模式"></a>组合模式</h2><p>处理树形结构（如文件系统、UI 控件嵌套）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">interface IComponent </span><br><span class="line">&#123; </span><br><span class="line">    void Add(IComponent component); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="装饰器模式"><a href="#装饰器模式" class="headerlink" title="装饰器模式"></a>装饰器模式</h2><p>动态添加功能（如日志记录、缓存、权限校验的链式扩展）</p>
+<p>Stream 类的装饰器：BufferedStream, CryptoStream</p>
+<h2 id="外观模式"><a href="#外观模式" class="headerlink" title="外观模式"></a>外观模式</h2><p>简化复杂子系统调用（如封装支付流程：验证、扣款、通知）。</p>
+<p>提供统一入口类：PaymentFacade.ProcessPayment(order)。</p>
+<h2 id="享元模式"><a href="#享元模式" class="headerlink" title="享元模式"></a>享元模式</h2><p>共享大量细粒度对象（如字符格式复用、游戏中的粒子系统）。</p>
+<p>String.Intern() 方法复用字符串常量</p>
+<h2 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h2><p>控制对象访问（如延迟加载、远程调用、权限验证）。</p>
+<p>Lazy<T> 类实现延迟加载，WCF 的客户端代理。</p>
+<h1 id="三、行为型模式（管理对象间的交互）"><a href="#三、行为型模式（管理对象间的交互）" class="headerlink" title="三、行为型模式（管理对象间的交互）"></a>三、行为型模式（管理对象间的交互）</h1><h2 id="责任链模式"><a href="#责任链模式" class="headerlink" title="责任链模式"></a>责任链模式</h2><p>多个对象依次处理请求（如审批流程、异常处理过滤器）。</p>
+<p>ASP.NET Core 中间件管道：app.UseMiddleware<LoggingMiddleware>()。</p>
+<h2 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h2><p>封装请求为对象（如撤销&#x2F;重做操作、任务队列）。</p>
+<p>WPF 的 ICommand 接口：RelayCommand。</p>
+<h2 id="解释器模式"><a href="#解释器模式" class="headerlink" title="解释器模式"></a>解释器模式</h2><p>定义语法规则并解释执行（如正则表达式、SQL解析）。</p>
+<p>正则表达式引擎 System.Text.RegularExpressions</p>
+<h2 id="迭代器模式"><a href="#迭代器模式" class="headerlink" title="迭代器模式"></a>迭代器模式</h2><p>遍历集合元素（如自定义集合的遍历逻辑）。</p>
+<p>实现 IEnumerable<T> 和 IEnumerator<T> 接口。</p>
+<h2 id="中介者模式"><a href="#中介者模式" class="headerlink" title="中介者模式"></a>中介者模式</h2><p>减少对象间直接耦合（如聊天室消息转发、UI控件交互）。</p>
+<p>使用 MediatR 库实现事件调度。</p>
+<h2 id="备忘录模式"><a href="#备忘录模式" class="headerlink" title="备忘录模式"></a>备忘录模式</h2><p>保存和恢复对象状态（如游戏存档、事务回滚）。</p>
+<p>序列化对象到文件或数据库。</p>
+<h2 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h2><p>一对多依赖通知（如事件发布-订阅、数据绑定）。</p>
+<p>C# 的 event 关键字和 IObservable<T>&#x2F;IObserver<T> 接口。</p>
+<h2 id="状态模式"><a href="#状态模式" class="headerlink" title="状态模式"></a>状态模式</h2><p>对象行为随状态改变（如订单状态流转、游戏角色行为切换）。</p>
+<p>定义状态接口：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">interface IState </span><br><span class="line">&#123; </span><br><span class="line">    void Handle(Context context); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h2><p>动态切换算法（如排序算法选择、支付方式切换）。</p>
+<p>依赖注入中的不同服务实现：services.AddScoped&lt;IPaymentStrategy, AlipayStrategy&gt;()。</p>
+<h2 id="模板方法"><a href="#模板方法" class="headerlink" title="模板方法"></a>模板方法</h2><p>定义算法骨架，子类实现步骤（如工作流引擎、数据导入流程）</p>
+<p>抽象类定义流程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">abstract class DataImporter </span><br><span class="line">&#123; </span><br><span class="line">    public void <span class="function"><span class="title">Import</span></span>() </span><br><span class="line">    &#123; </span><br><span class="line">        ... </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="访问者模式"><a href="#访问者模式" class="headerlink" title="访问者模式"></a>访问者模式</h2><p>分离数据结构与操作（如AST树解析、报表生成）。</p>
+<p>实现 IVisitor 接口遍历复杂对象结构。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://xuexuanfeng.github.io">xuexuanfeng</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://xuexuanfeng.github.io/2025/04/18/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/">http://xuexuanfeng.github.io/2025/04/18/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">架构设计</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/2025/04/23/unity%E4%B8%ADSprite%E5%92%8CImage%E7%9A%84%E5%8C%BA%E5%88%AB/" title="unity中Sprite和Image的区别"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">unity中Sprite和Image的区别</div></div></a><a class="next-post pull-right" href="/2025/03/19/Unity%E5%9C%BA%E6%99%AF%E7%89%A9%E4%BD%93%E8%B4%B4%E5%9C%B0%E6%93%8D%E4%BD%9C/" title="Unity场景物体贴地操作"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">Unity场景物体贴地操作</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a href="/2025/02/04/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="架构设计"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-04</div><div class="title">架构设计</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xuexuanfeng</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xuexuanfeng/"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">炸裂的2.5次元空间</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%88%9B%E5%BB%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%B0%81%E8%A3%85%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">一、创建型模式（封装对象的创建）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.1.</span> <span class="toc-text">单例模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">工厂方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82"><span class="toc-number">1.3.</span> <span class="toc-text">抽象工厂</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.4.</span> <span class="toc-text">建造者模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.5.</span> <span class="toc-text">原型模式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%A4%84%E7%90%86%E5%AF%B9%E8%B1%A1%E9%97%B4%E7%9A%84%E7%BB%84%E5%90%88%E5%85%B3%E7%B3%BB%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">二、结构型模式（处理对象间的组合关系）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.1.</span> <span class="toc-text">适配器模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.2.</span> <span class="toc-text">桥接模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.3.</span> <span class="toc-text">组合模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.4.</span> <span class="toc-text">装饰器模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.5.</span> <span class="toc-text">外观模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.6.</span> <span class="toc-text">享元模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.7.</span> <span class="toc-text">代理模式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E8%A1%8C%E4%B8%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%88%E7%AE%A1%E7%90%86%E5%AF%B9%E8%B1%A1%E9%97%B4%E7%9A%84%E4%BA%A4%E4%BA%92%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">三、行为型模式（管理对象间的交互）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.1.</span> <span class="toc-text">责任链模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.2.</span> <span class="toc-text">命令模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.3.</span> <span class="toc-text">解释器模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.4.</span> <span class="toc-text">迭代器模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.5.</span> <span class="toc-text">中介者模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.6.</span> <span class="toc-text">备忘录模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.7.</span> <span class="toc-text">观察者模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.8.</span> <span class="toc-text">状态模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.9.</span> <span class="toc-text">策略模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95"><span class="toc-number">3.10.</span> <span class="toc-text">模板方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.11.</span> <span class="toc-text">访问者模式</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/04/24/worldstreamer%E7%9A%84Terrain%E5%88%86%E5%89%B2%E5%8E%9F%E7%90%86/" title="worldstreamer的Terrain分割原理">worldstreamer的Terrain分割原理</a><time datetime="2025-04-24T14:43:26.000Z" title="Created 2025-04-24 22:43:26">2025-04-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/04/23/unity%E4%B8%ADSprite%E5%92%8CImage%E7%9A%84%E5%8C%BA%E5%88%AB/" title="unity中Sprite和Image的区别">unity中Sprite和Image的区别</a><time datetime="2025-04-23T09:34:10.000Z" title="Created 2025-04-23 17:34:10">2025-04-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/04/18/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/" title="设计模式的应用场景">设计模式的应用场景</a><time datetime="2025-04-18T03:17:58.000Z" title="Created 2025-04-18 11:17:58">2025-04-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/19/Unity%E5%9C%BA%E6%99%AF%E7%89%A9%E4%BD%93%E8%B4%B4%E5%9C%B0%E6%93%8D%E4%BD%9C/" title="Unity场景物体贴地操作">Unity场景物体贴地操作</a><time datetime="2025-03-19T07:50:24.000Z" title="Created 2025-03-19 15:50:24">2025-03-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/17/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F%E5%8F%8D%E7%BC%96%E8%AF%91/" title="微信小游戏反编译">微信小游戏反编译</a><time datetime="2025-03-17T13:58:36.000Z" title="Created 2025-03-17 21:58:36">2025-03-17</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By xuexuanfeng</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

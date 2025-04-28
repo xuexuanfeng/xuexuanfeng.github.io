@@ -4,6 +4,120 @@
   
     
     <entry>
+      <title>worldstreamer的Terrain分割原理</title>
+      <link href="/2025/04/24/worldstreamer%E7%9A%84Terrain%E5%88%86%E5%89%B2%E5%8E%9F%E7%90%86/"/>
+      <url>/2025/04/24/worldstreamer%E7%9A%84Terrain%E5%88%86%E5%89%B2%E5%8E%9F%E7%90%86/</url>
+      
+        <content type="html"><![CDATA[<h1 id="worldstreamer的Terrain分割原理"><a href="#worldstreamer的Terrain分割原理" class="headerlink" title="worldstreamer的Terrain分割原理"></a>worldstreamer的Terrain分割原理</h1><p>SplitTerrain 函数的逻辑主要是将选定的地形（Terrain）进行分割，并将每个分割后的地形保存为独立的地形对象。以下是该函数的主要步骤和逻辑：</p><ol><li><p>创建目录：首先检查是否存在用于存储分割地形的目录，如果不存在则创建该目录。</p></li><li><p><strong>开始撤销组</strong>：使用 <code>Undo.SetCurrentGroupName</code> 开始一个撤销操作组，以便在用户需要撤销操作时能够恢复到之前的状态。</p></li><li><p><strong>设置分割数量</strong>：根据 <code>splitSize</code> 属性计算出将要创建的地形数量。</p></li><li><p><strong>获取选定的地形</strong>：根据用户的选择获取当前选定的地形，如果 <code>allTerrains</code> 为真，则获取所有活动的地形。</p></li><li><p><strong>遍历每个地形</strong>：对于每个选定的地形，执行以下操作：</p><ul><li><p><strong>创建新地形</strong>：根据分割数量创建新的地形数据和地形对象(Terrain.CreateTerrainGameObject这个接口可以想创建Gameobject一样直接在场景上面放一个terrain)。</p></li><li><p><strong>复制地形原型</strong>：将原始地形的所有原型（如树木、细节等）复制到新地形中。</p></li><li><p><strong>设置地形属性</strong>：调用 <code>SetTerrainSettings</code> 函数来设置新地形的各种属性。</p></li><li><p><strong>分割高度图</strong>：根据分割的大小，从原始地形的高度图中提取相应的部分并设置到新地形中。</p></li><li><p><strong>分割孔数据</strong>：同样处理地形的孔数据（如空洞）。</p></li><li><p><strong>分割纹理数据</strong>：处理地形的纹理数据，将其分割并设置到新地形中。</p></li><li><p><strong>分割细节数据</strong>：处理地形的细节数据（如草、灌木等），将其分割并设置到新地形中。</p></li><li><p><strong>处理树木实例</strong>：遍历原始地形的树木实例，将其位置调整并添加到新地形中。</p></li><li><p><strong>设置新地形的位置</strong>：根据原始地形的位置调整新地形的位置。</p></li></ul></li><li><p><strong>结束撤销组</strong>：在所有操作完成后，结束撤销操作组。</p></li><li><p><strong>清理进度条</strong>：在操作完成后，清理进度条。</p></li></ol><p>通过这些步骤，<code>SplitTerrain</code> 函数能够将一个大的地形分割成多个小的地形，便于管理和使用。每个新地形都保留了原始地形的特性和数据。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> worldstreamer的Terrain分割原理 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>unity中Sprite和Image的区别</title>
+      <link href="/2025/04/23/unity%E4%B8%ADSprite%E5%92%8CImage%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
+      <url>/2025/04/23/unity%E4%B8%ADSprite%E5%92%8CImage%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+      
+        <content type="html"><![CDATA[<h1 id="unity中Sprite和Image的区别"><a href="#unity中Sprite和Image的区别" class="headerlink" title="unity中Sprite和Image的区别"></a>unity中Sprite和Image的区别</h1><ol><li><p>渲染上</p><ul><li>Image 通过UGUI的Image和CanvasRenderer组件组件来渲染；</li><li>Sprite 通过SpriteRenderer组件来渲染；</li><li>两者在视觉上没有任何区别（都使用默认材质时）。它们默认的渲染也都是在Transparent Geometry队列中。</li></ul></li><li><p>原理上：</p><ul><li>GPU接收到DrawCall指令后，通过一系列流程生成最终要显示的内容并进行渲染，其中大致的步骤包括：<ul><li>CPU发送Draw Call指令给GPU；</li><li>GPU读取必要的数据到自己的显存；</li><li>GPU通过顶点着色器（vertex shader）等步骤将输入的几何体信息转化为像素点数据；</li><li>每个像素都通过片段着色器（fragment shader）处理后写入帧缓存(显存)；</li><li>当全部计算完成后，GPU将帧缓存内容显示在屏幕上。</li></ul></li><li>通过上面的认知，我们可以推断：<ul><li>Sprite由于顶点数据更加复杂，进行顶点计算时在第1、2步会比Image效率更低；</li><li>Sprite会比Image执行较多的顶点着色器运算；</li><li>Image会比Sprite执行更多的片段着色器运算；</li></ul></li></ul></li><li><p>使用上：</p><ul><li>Hierarchy窗口,可以把sprite随便放在哪，通过Transform移动其它游戏物体那样移动sprite； Image必须放在Canvas下面, 且只能通过RectTransform在UI界面中移动；</li><li>sprite和Image的一个最重要的区别在于sprite支持网格的自动构造，而UI Image的网格始终由矩形构成;SpriteRenderer会创建额外的几何体来裁剪掉多余的透明像素区域，从而减少了大量的片段着色器运算，并降低了overdraw。SpriteRenderer确实是经过优化以显示更多的元素的。所以在2D游戏开发中，游戏场景中的元素，应该尽量使用它去渲染，尤其时复杂的几何图像；</li><li>Image仅用于UI显示；</li></ul></li></ol>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> unity优化 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>设计模式的应用场景</title>
+      <link href="/2025/04/18/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/"/>
+      <url>/2025/04/18/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/</url>
+      
+        <content type="html"><![CDATA[<h1 id="一、创建型模式（封装对象的创建）"><a href="#一、创建型模式（封装对象的创建）" class="headerlink" title="一、创建型模式（封装对象的创建）"></a>一、创建型模式（封装对象的创建）</h1><h2 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h2><p>需要全局唯一实例（如日志管理器、配置中心、数据库连接池）。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public sealed class Singleton </span><br><span class="line">&#123; </span><br><span class="line">    private static Singleton _instance; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="工厂方法"><a href="#工厂方法" class="headerlink" title="工厂方法"></a>工厂方法</h2><p>创建对象时需依赖子类决定具体类型（如不同数据库驱动、UI 控件的动态生成）。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">abstract class Creator </span><br><span class="line">&#123; </span><br><span class="line">    public abstract IProduct FactoryMethod(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="抽象工厂"><a href="#抽象工厂" class="headerlink" title="抽象工厂"></a>抽象工厂</h2><p>创建一组相关或依赖的对象（如跨平台 UI 组件库：Windows&#x2F;Mac 的按钮、文本框）</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">interface IGUIFactory </span><br><span class="line">&#123; </span><br><span class="line">    IButton CreateButton(); </span><br><span class="line">    ITextBox CreateTextBox(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="建造者模式"><a href="#建造者模式" class="headerlink" title="建造者模式"></a>建造者模式</h2><p>分步骤构建复杂对象（如生成 XML&#x2F;JSON 文档、配置 HTTP 请求头）。</p><p>StringBuilder 类的链式调用</p><h2 id="原型模式"><a href="#原型模式" class="headerlink" title="原型模式"></a>原型模式</h2><p>通过克隆已有对象创建新对象，避免重复初始化（如游戏中的敌人复制、配置模板）。</p><p>实现 ICloneable 接口：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public object <span class="function"><span class="title">Clone</span></span>() </span><br><span class="line">&#123; </span><br><span class="line">    <span class="built_in">return</span> MemberwiseClone(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h1 id="二、结构型模式（处理对象间的组合关系）"><a href="#二、结构型模式（处理对象间的组合关系）" class="headerlink" title="二、结构型模式（处理对象间的组合关系）"></a>二、结构型模式（处理对象间的组合关系）</h1><h2 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h2><p>将不兼容接口转换为客户端期望的接口（如旧系统接口适配新框架）。</p><p>包装第三方库的类：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">class LegacyAdapter : INewInterface </span><br><span class="line">&#123; </span><br><span class="line">    private Legacy _legacy; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="桥接模式"><a href="#桥接模式" class="headerlink" title="桥接模式"></a>桥接模式</h2><p>分离抽象与实现，支持多维变化（如不同图形渲染API：OpenGL&#x2F;DirectX）。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">abstract class Shape</span><br><span class="line">&#123; </span><br><span class="line">    protected IRenderer _renderer; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="组合模式"><a href="#组合模式" class="headerlink" title="组合模式"></a>组合模式</h2><p>处理树形结构（如文件系统、UI 控件嵌套）。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">interface IComponent </span><br><span class="line">&#123; </span><br><span class="line">    void Add(IComponent component); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="装饰器模式"><a href="#装饰器模式" class="headerlink" title="装饰器模式"></a>装饰器模式</h2><p>动态添加功能（如日志记录、缓存、权限校验的链式扩展）</p><p>Stream 类的装饰器：BufferedStream, CryptoStream</p><h2 id="外观模式"><a href="#外观模式" class="headerlink" title="外观模式"></a>外观模式</h2><p>简化复杂子系统调用（如封装支付流程：验证、扣款、通知）。</p><p>提供统一入口类：PaymentFacade.ProcessPayment(order)。</p><h2 id="享元模式"><a href="#享元模式" class="headerlink" title="享元模式"></a>享元模式</h2><p>共享大量细粒度对象（如字符格式复用、游戏中的粒子系统）。</p><p>String.Intern() 方法复用字符串常量</p><h2 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h2><p>控制对象访问（如延迟加载、远程调用、权限验证）。</p><p>Lazy<T> 类实现延迟加载，WCF 的客户端代理。</p><h1 id="三、行为型模式（管理对象间的交互）"><a href="#三、行为型模式（管理对象间的交互）" class="headerlink" title="三、行为型模式（管理对象间的交互）"></a>三、行为型模式（管理对象间的交互）</h1><h2 id="责任链模式"><a href="#责任链模式" class="headerlink" title="责任链模式"></a>责任链模式</h2><p>多个对象依次处理请求（如审批流程、异常处理过滤器）。</p><p>ASP.NET Core 中间件管道：app.UseMiddleware<LoggingMiddleware>()。</p><h2 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h2><p>封装请求为对象（如撤销&#x2F;重做操作、任务队列）。</p><p>WPF 的 ICommand 接口：RelayCommand。</p><h2 id="解释器模式"><a href="#解释器模式" class="headerlink" title="解释器模式"></a>解释器模式</h2><p>定义语法规则并解释执行（如正则表达式、SQL解析）。</p><p>正则表达式引擎 System.Text.RegularExpressions</p><h2 id="迭代器模式"><a href="#迭代器模式" class="headerlink" title="迭代器模式"></a>迭代器模式</h2><p>遍历集合元素（如自定义集合的遍历逻辑）。</p><p>实现 IEnumerable<T> 和 IEnumerator<T> 接口。</p><h2 id="中介者模式"><a href="#中介者模式" class="headerlink" title="中介者模式"></a>中介者模式</h2><p>减少对象间直接耦合（如聊天室消息转发、UI控件交互）。</p><p>使用 MediatR 库实现事件调度。</p><h2 id="备忘录模式"><a href="#备忘录模式" class="headerlink" title="备忘录模式"></a>备忘录模式</h2><p>保存和恢复对象状态（如游戏存档、事务回滚）。</p><p>序列化对象到文件或数据库。</p><h2 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h2><p>一对多依赖通知（如事件发布-订阅、数据绑定）。</p><p>C# 的 event 关键字和 IObservable<T>&#x2F;IObserver<T> 接口。</p><h2 id="状态模式"><a href="#状态模式" class="headerlink" title="状态模式"></a>状态模式</h2><p>对象行为随状态改变（如订单状态流转、游戏角色行为切换）。</p><p>定义状态接口：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">interface IState </span><br><span class="line">&#123; </span><br><span class="line">    void Handle(Context context); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h2><p>动态切换算法（如排序算法选择、支付方式切换）。</p><p>依赖注入中的不同服务实现：services.AddScoped&lt;IPaymentStrategy, AlipayStrategy&gt;()。</p><h2 id="模板方法"><a href="#模板方法" class="headerlink" title="模板方法"></a>模板方法</h2><p>定义算法骨架，子类实现步骤（如工作流引擎、数据导入流程）</p><p>抽象类定义流程：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">abstract class DataImporter </span><br><span class="line">&#123; </span><br><span class="line">    public void <span class="function"><span class="title">Import</span></span>() </span><br><span class="line">    &#123; </span><br><span class="line">        ... </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="访问者模式"><a href="#访问者模式" class="headerlink" title="访问者模式"></a>访问者模式</h2><p>分离数据结构与操作（如AST树解析、报表生成）。</p><p>实现 IVisitor 接口遍历复杂对象结构。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 架构设计 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Unity场景物体贴地操作</title>
+      <link href="/2025/03/19/Unity%E5%9C%BA%E6%99%AF%E7%89%A9%E4%BD%93%E8%B4%B4%E5%9C%B0%E6%93%8D%E4%BD%9C/"/>
+      <url>/2025/03/19/Unity%E5%9C%BA%E6%99%AF%E7%89%A9%E4%BD%93%E8%B4%B4%E5%9C%B0%E6%93%8D%E4%BD%9C/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Unity场景物体贴地操作"><a href="#Unity场景物体贴地操作" class="headerlink" title="Unity场景物体贴地操作"></a>Unity场景物体贴地操作</h1><p>以前会专门为底边开发一个物体贴地的工具，但unity其实编辑器内原生自带了这个功能，选中物体按下Ctrl+Shift,场景物体中间会出现一个灰色的小方框，拖动物体编辑器就会自动处理贴地的效果</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> UnityEditor小技巧 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>微信小游戏反编译</title>
+      <link href="/2025/03/17/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F%E5%8F%8D%E7%BC%96%E8%AF%91/"/>
+      <url>/2025/03/17/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F%E5%8F%8D%E7%BC%96%E8%AF%91/</url>
+      
+        <content type="html"><![CDATA[<h1 id="微信小游戏反编译"><a href="#微信小游戏反编译" class="headerlink" title="微信小游戏反编译"></a>微信小游戏反编译</h1><p><a href="https://www.cnblogs.com/thebeastofwar/p/17611201.html">参考文献</a></p><h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><ol><li>注册开发者工具+申请小游戏类目</li></ol><p>不能用微信开发者工具自带的测试者账号，有一些小程序需要调用你的token</p><p><a href="https://developers.weixin.qq.com/">https://developers.weixin.qq.com/</a></p><ol start="2"><li>安装并下载反编译软件</li></ol><p><a href="https://www.cnblogs.com/thebeastofwar/p/17611201.html">https://www.cnblogs.com/thebeastofwar/p/17611201.html</a></p><ol><li><p>wxappUnpacker-master</p><p> <a href="../../file/wxappUnpacker-master.zip">下载文件</a></p></li><li><p>UnpackMiniApp</p><p> <a href="../../file/UnpackMiniApp.zip">下载文件</a></p></li></ol><h1 id="常规操作"><a href="#常规操作" class="headerlink" title="常规操作"></a>常规操作</h1><ol><li>反编译小游戏</li></ol><p>在windows上的微信中打开并加载小游戏</p><p>找到小游戏的下载目录WeChatFiles\Applet,有两个包</p><p>找到游戏主包(unity转换的游戏包含_WITHOUT_MULTI_PLUGINCODE_.wxapkg),另一个自爆里面包含的是插件包，不用管</p><p>不要移动这几个包的位置，直接双击运行UnpackMiniApp.exe,选择加密小程序包</p><p>选择一个包(每次选择一个)</p><p>解密成功后，报的位置位于UnpackMiniApp.exe统计目录的wxpack目录下，由于每次解密后的包名相同，需要给解密后的包重命名，以防被覆盖</p><p>在依次解密_wasmcode_.wxapkg和_wasmcode1_.wxapkg这两个包,都重命名，得到如下三个解密的包</p><p>在使用wxappUnpacker-master这个工具，主要用到的是wuWxapkg.jg这个解包脚本和wuJs.js这个分包脚本</p><p>安装node.js，运行命令</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node .\wuWxapkg.js E:\tools\wxpack\main.wxapkg <span class="comment"># 加入路径</span></span><br></pre></td></tr></table></figure><p>解压成功</p><p>在依次解压pkg1.wxapkg和pkg2.wxapkg,得到两个文件夹</p><ol start="2"><li>导入小游戏</li></ol><ul><li><p>打开微信开发者工具-&gt;微信小游戏-&gt;import</p></li><li><p>选择项目路径-&gt;设置提前申请好的小游戏类目appid</p></li><li><p>点击create</p></li></ul><ol start="3"><li>项目设置(本地设置Local setting)</li></ol><p>首先检查微信开发者工具的相关设置</p><ul><li>确保这几项设置正确勾选(新人并运行，将JS编译成ES5,不校验合法域名)</li></ul><ol start="4"><li>Subpackages添加和配置删除</li></ol><p>根据主目录game.json中的subpackages配置，添加我们反编译的子包,并删除不存在的子包配置</p><ol start="5"><li>引擎配置问题</li></ol><p>详情查看<a href="#question3">常见问题3</a></p><p>修改game.json中的gamePlugins-&gt;plugins</p><ol start="6"><li>报错:VM2_INTERNAL_STATE_DONOT_USE_OR_PROGRAM_WILL_FAIL</li></ol><p>VM2_INTERNAL_STATE_DONOT_USE_OR_PROGRAM_WILL_FAIL undefined</p><p>在game.js中添加如下代码：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">VM2_INTERNAL_STATE_DO_NOT_USE_OR_PROGRAM_WILL_FAIL = &#123;</span><br><span class="line">  handleException: (e) =&gt; &#123;</span><br><span class="line">    console.warn(e);</span><br><span class="line">    <span class="built_in">return</span> e;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><ol start="7"><li>删除game.js报错(常出现在subpackages中)</li></ol><p>可能会有显示(console)和隐式(非debug模式下无法运行但没有log)的错误，导致微信开发者工具内无法显示游戏页面，通常需要对main包之外的包中game.js进行如下define和require的处理:</p><p><img src="/img/fa37821da338f520c2579457435214b.jpg" alt="图标"></p><p>例如在这个额外导入的wasmcode1包中，需要将外层注释。</p><p>建议对所有包进行预处理，避免host中可能的require错误（尽管此错误不会影响游戏运行）</p><ol start="8"><li>Mock Login</li></ol><p>详情查看<a href="#loginpipline">微信登陆服务模拟搭建流程</a></p><h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a><h2 id="question3">常见问题</h2></h2><ol><li>PARAMOUNT</li></ol><p>首先检查微信开发者工具的相关设置</p><ul><li>确保这几项设置正确勾选（信任并运行，将JS编译成ES5，不校验合法域名）</li></ul><ol start="2"><li>*&#x2F;game.js预处理</li></ol><p>可能会有显示(console)和隐式(非debug模式下无法运行但没有log)的错误，导致微信开发者工具内无法显示游戏页面，通常需要对main包之外的包中game.js进行如下define和require的处理:</p><p><img src="/img/fa37821da338f520c2579457435214b.jpg" alt="图标"></p><p>例如在这个额外导入的wasmcode1包中，需要将外层注释。</p><p>建议对所有包进行预处理，避免host中可能的require错误（尽管此错误不会影响游戏运行）</p><ol start="3"><li>引擎引用问题</li></ol><p>修改game.json中的gamePlugins-&gt;plugins</p><h3 id="UnityPlugin问题"><a href="#UnityPlugin问题" class="headerlink" title="UnityPlugin问题"></a>UnityPlugin问题</h3><p>在unity引擎的游戏中，需要通过微信账号导入能力地图-开发提效包-快适配，并将game.json中的gamePlugins改为plugins。一般情况下,游戏可以正常运行。</p><p>如果遇到无法运行的情况，可以留意plugins下UnityPlugin的版本。</p><p>实测1.2.38会遇到微信开发这工具中无法正确获取插件的情况。可以在此处将版本更新后在启动游戏。</p><p>建议将版本更新到1.2.54,与unity-wx-to-webgl-host转换包中的版本相对应。</p><h3 id="cocos的requirePlugin"><a href="#cocos的requirePlugin" class="headerlink" title="cocos的requirePlugin"></a>cocos的requirePlugin</h3><p>有游戏会将Cocos作为gamePlugin卸载game.json中，main&#x2F;app目录下的cocos目录里缺少cocos2d-js-min.js文件。此时游戏不会正常加载，亦不会有明显报错。需要做出一下改动：</p><ul><li><p>删除game.json下的cocos plugin定义</p></li><li><p>从网上或过往的项目里扒一个对应版本的cocos2d-js-min.js,黏贴到cocos目录下</p></li><li><p>修改game.js的</p></li></ul><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">requirePlugin(<span class="string">&quot;cocos&quot;</span>);</span><br></pre></td></tr></table></figure><p>为</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">require(<span class="string">&quot;cocos/cocos2d-js-min.js&quot;</span>);</span><br></pre></td></tr></table></figure><h3 id="Laya引擎处理方式"><a href="#Laya引擎处理方式" class="headerlink" title="Laya引擎处理方式"></a>Laya引擎处理方式</h3><p>同上</p><ol start="4"><li>快速hook login</li></ol><p>在game.js中添加如下代码，将url替换成本游戏的登陆密码</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">var orgR = wx.request;</span><br><span class="line">wx.request = (obj) =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (obj.url.indexOf(<span class="string">&#x27;weixingamelogin.php?jscode=&#x27;</span>) &gt; -1) &#123;</span><br><span class="line">        debugger</span><br><span class="line">        console.log(<span class="string">&quot;获得的obj为:&quot;</span>, obj);</span><br><span class="line">        obj.url = <span class="string">&#x27;https://bd11-rel.52playgame.com&#x27;</span> + </span><br><span class="line">        <span class="string">&#x27;/gmsys/weblogic/webc/weixingamelogin.php?jscode=0e3FP5ll2xbd7e4xLPkl25sgD40FP5l1&amp;group=1&amp;systematic=3&amp;encrypteddata=undefined&amp;iv=undefined&amp;os=Windows%2011%20x64&amp;model=microsoft&amp;toutiao_cluetoken=&amp;toutiao_create_id=&amp;toutiao_ad_id=&amp;guangdiantong_minigamechannel=&amp;guangdiantong_clickid=&amp;weixinadinfo=&amp;xingtu_callback=&amp;chuanshanjia_cluetoken=&amp;baidu_bd_vid=&amp;baidu_ext_info=&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">return</span> orgR(obj);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ol start="5"><li>加解密</li></ol><p>遇到类似  “sign1”:”OTAyMTY1M3d4NjEzMjEyZTNkNDk3ZWVkOTE3MjcyNTAxMTE&#x3D;” 的值，可以尝试用 base64解码，可能可以获取wxid和timestamp</p><p><a href="https://www.sojson.com/base64.html">https://www.sojson.com/base64.html</a></p><ol start="6"><li>[“workers”]字段需要为目录</li></ol><p>在目录下找打了workers.js的文件</p><p><img src="/img/5ab912ead2e88e55b3bdca157bb6f6a.jpg" alt="图标"></p><p>需要用wxappUnpacker-master这个工具中的wuJs.js进行分包，执行命令：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node .\wuJs.js E:\tools\wxpack\main\workers.js</span><br></pre></td></tr></table></figure><p>分包成功,得到worker&#x2F;response&#x2F;index.js</p><ol start="7"><li>Unity plugin加载 data-package失败</li></ol><p>在获取游戏是，目录中没有_data-package_.wxapkg这个包。在微信开发者工具中手动创建data-package目录后，在console中遇到如下报错：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[PLUGIN ERROR 16:58.17.613]  解压资源失败, 加载方式: 分包, errMsg:  readCompressedFile:fail data-package/830ce1e8f65310db.webgl.data.unityweb.bin.br not found(<span class="built_in">env</span>: Windows,mg,1.06.2405020; lib: development)</span><br></pre></td></tr></table></figure><p>发现在data-package目录下，加载游戏分包时，并没有得到 830ce1e8f65310db.webgl.data.unityweb.bin.br 这个文件这种情况可能是在加载游戏的时候，data package 缓存到了用户的本地目录WeChat Files&lt;用户的hash码&gt;\Applet&lt;游戏的码&gt;\usr（如：WeChat Files\wxid_hq52a973p00x22\Applet\wxfc5347dec6075f3a\usr）下面解决方法：把WeChat Files&lt;用户的hash码&gt;\Applet\下的缓存文件全部删掉，并且把WeChat Files\Applet\下面的游戏缓存全部删掉，重新打开并加载游戏有可能会在游戏的文件中得到 <em>data-package</em>.wxapkg 文件</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Unity微信小游戏 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>FPS游戏武器被墙体遮挡的问题</title>
+      <link href="/2025/03/11/FPS%E6%B8%B8%E6%88%8F%E6%AD%A6%E5%99%A8%E8%A2%AB%E5%A2%99%E4%BD%93%E9%81%AE%E6%8C%A1%E7%9A%84%E9%97%AE%E9%A2%98/"/>
+      <url>/2025/03/11/FPS%E6%B8%B8%E6%88%8F%E6%AD%A6%E5%99%A8%E8%A2%AB%E5%A2%99%E4%BD%93%E9%81%AE%E6%8C%A1%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[<h1 id="FPS游戏武器被墙体遮挡的问题"><a href="#FPS游戏武器被墙体遮挡的问题" class="headerlink" title="FPS游戏武器被墙体遮挡的问题"></a>FPS游戏武器被墙体遮挡的问题</h1><p>&emsp;&emsp;在FPS游戏中武器经常会因为摄像机透视视角的原因导致被游戏中的某些环境遮挡，有些游戏会要求武器永远被渲染在屏幕中不会被遮挡，这时候可以使用单独的一个相机设置culling mask来渲染武器这个层</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> unity优化 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>架构设计</title>
       <link href="/2025/02/04/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/"/>
       <url>/2025/02/04/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</url>
