@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>unity的插值计算</title>
+      <link href="/2025/05/08/unity%E7%9A%84%E6%8F%92%E5%80%BC%E8%AE%A1%E7%AE%97/"/>
+      <url>/2025/05/08/unity%E7%9A%84%E6%8F%92%E5%80%BC%E8%AE%A1%E7%AE%97/</url>
+      
+        <content type="html"><![CDATA[<h1 id="unity的插值计算"><a href="#unity的插值计算" class="headerlink" title="unity的插值计算"></a>unity的插值计算</h1><h2 id="Mathf的插值运算API"><a href="#Mathf的插值运算API" class="headerlink" title="Mathf的插值运算API"></a>Mathf的插值运算API</h2><ul><li><p>Lerp方法：</p><ul><li>功能：实现两个浮点数之间的插值运算。</li><li>API：Mathf.Lerp(float a, float b, float t)</li><li>参数：a为起始值，b为结束值，t为插值因子（0到1之间）。</li><li>返回值：根据t的值，返回a和b之间的插值结果。</li></ul></li></ul><p><img src="/img/202505081609.png" alt="截图"></p><p><img src="/img/MathfLerp.gif" alt="截图"></p><h2 id="Vector3的插值运算API"><a href="#Vector3的插值运算API" class="headerlink" title="Vector3的插值运算API"></a>Vector3的插值运算API</h2><ul><li><p>Lerp方法：</p><ul><li>功能：实现两个三维向量之间的线性插值运算。</li><li>API：Vector3.Lerp(Vector3 a, Vector3 b, float t)</li><li>参数：a为起始向量，b为结束向量，t为插值因子（0到1之间）。</li><li>返回值：根据t的值，返回a和b之间的线性插值向量。</li><li>应用场景：常用于物体的位置移动、方向变化等线性过渡效果。</li></ul></li></ul><p><img src="/img/202505081613.png" alt="截图"></p><p><img src="/img/Vector3Lerp.gif" alt="截图"></p><p>Slerp方法：</p><ul><li>功能：实现两个三维向量之间的球形插值运算，即沿球面的大圆弧进行插值。<ul><li>API：Vector3.Slerp(Vector3 a, Vector3 b, float t)</li><li>参数：a为起始向量，b为结束向量，t为插值因子（0到1之间）。</li><li>返回值：根据t的值，返回a和b之间的球形插值向量。</li><li>应用场景：常用于物体的平滑旋转、摄像机朝向变化等需要保持恒定角速度的插值效果。</li><li>相比线性插值Lerp将Vector3当作空间的点，球形插值Slerp则是将Vector3当作方向，返回的Vector3的长度是两点之前的距离插值，方向是两个向量之间的夹角度数的插值。游戏中主要的应用场景有角色或物体的曲线跳跃,武器或抛射物的弧形弹道。</li></ul></li></ul><p><img src="/img/202505081614.png" alt="截图"></p><p><img src="/img/Vector3SLerp.gif" alt="截图"></p><h2 id="Quaternion的插值运算API"><a href="#Quaternion的插值运算API" class="headerlink" title="Quaternion的插值运算API"></a>Quaternion的插值运算API</h2><ul><li><p>Lerp方法：</p><ul><li>功能：实现两个四元数之间的线性插值运算，用于旋转的线性过渡。</li><li>API及参数：与Vector3.Lerp类似，但操作对象为四元数。</li><li>返回值：根据插值因子返回两个四元数之间的线性插值结果。</li><li>应用场景：虽然可以用于旋转插值，但可能产生“万向节锁”问题，因此不如Slerp常用。</li></ul></li><li><p>Slerp方法：</p><ul><li>功能：实现两个四元数之间的球形插值运算，用于旋转的平滑过渡。</li><li>API：Quaternion.Slerp(Quaternion a, Quaternion b, float t)</li><li>参数：a为起始四元数，b为结束四元数，t为插值因子（0到1之间）。</li><li>返回值：根据t的值，返回a和b之间的球形插值四元数。</li><li>应用场景：相机的平滑跟随与视角切换，角色的平滑转向，动画中的关节旋转过渡，UI 元素的动态旋转效果等等</li></ul></li></ul><p>Quaternion的插值分析及总结<br>Lerp求得的是四元数在圆上的弦上的等分，而Slerp求得的是四元数载圆上的圆弧的等分</p><p><img src="/img/202505081617.png" alt="截图"></p><p>从这张图可以看出lerp的运动轨迹是开始和结束慢，中间又比较快</p><p><img src="/img/202505081618.png" alt="截图"></p><p><img src="/img/QuaternionSlerp.gif" alt="截图"></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 学习记录 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Addressables小游戏改造</title>
       <link href="/2025/05/08/Addressables%E5%B0%8F%E6%B8%B8%E6%88%8F%E6%94%B9%E9%80%A0/"/>
       <url>/2025/05/08/Addressables%E5%B0%8F%E6%B8%B8%E6%88%8F%E6%94%B9%E9%80%A0/</url>
