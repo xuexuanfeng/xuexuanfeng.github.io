@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>Addressables小游戏改造</title>
+      <link href="/2025/05/08/Addressables%E5%B0%8F%E6%B8%B8%E6%88%8F%E6%94%B9%E9%80%A0/"/>
+      <url>/2025/05/08/Addressables%E5%B0%8F%E6%B8%B8%E6%88%8F%E6%94%B9%E9%80%A0/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Addressables小游戏改造"><a href="#Addressables小游戏改造" class="headerlink" title="Addressables小游戏改造"></a>Addressables小游戏改造</h1><ol><li><p>安装addressables的package</p></li><li><p>打开Addressables Groups，这里遇到几个问题，我发现直接把Resource目录的Addressable勾上，他Resource目录中的资源并不会移出包体</p></li></ol><p><img src="/img/202405081038.png" alt="截图"></p><p><img src="/img/202405081038_1.png" alt="截图"></p><p>&emsp;&emsp;只有当勾选resource内部的时候才会有移出资源的提示，所以不能直接偷懒这么做。</p><ol start="3"><li>导出路径可以选择Remote</li></ol><p><img src="/img/202505081041.png" alt="截图"></p><p>&emsp;&emsp;打开Manage Profiles修改LoadPath路径</p><p><img src="/img/202505081042.png" alt="截图"></p><ol start="4"><li>打包的时候如果Bundle Mode选择Pack Together的话单个Group的资源会打成一个bundle，这样会产生一些无用资源的加载浪费，所以我的解决办法是一个类型文件一个Group，然后Bundle Mode选择Pack Separately，这样一个文件打成一个bundle。个人测下来Pack Separately的打包逻辑是当前目录下的所有子对象都自成一个bundle，并不是目录下的所有资源都打成单独的bundle，比方说目录A勾选addressables,然后目录A里面又有目录B,C,D，打包的资源在第三层目录结构下，如果这时候build，他会生成三个bundle，分别代表目录B,C,D。所以正确的做法是目录B,C,D勾选为addressables，而不是勾选目录A。</li></ol><p><img src="/img/202505081043.png" alt="截图"></p><ol start="5"><li>加载资源使用：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AsyncOperationHandle&lt;GameObject&gt; handle = Addressables.LoadAssetAsync&lt;GameObject&gt;(<span class="string">&quot;Name&quot;</span>);</span><br></pre></td></tr></table></figure></li></ol><p>加载场景使用：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AsyncOperationHandle&lt;SceneInstance&gt; sceneHandle = Addressables.LoadSceneAsync(<span class="string">&quot;Assets/Scenes/Level1.unity&quot;</span>, LoadSceneMode.Additive);</span><br></pre></td></tr></table></figure><p>&emsp;&emsp;这里还可以通过SceneInstance控制场景的激活和加载进度</p><p><img src="/img/202505081045.png" alt="截图"></p><ol start="6"><li>最后就是将同步加载结构改为异步加载API的枯燥过程了</li></ol><p>PS：这里有几点需要注意，刚开始从together切换成Pack Separately后打出来的包还是一整个，清理下缓存恢复正常，建议每次build之前都清理一下。</p><p><img src="/img/202505081046.png" alt="截图"></p><p>PS: 使用服务器下载bundle的方式测试会报错</p><p><img src="/img/202505081047.png" alt="截图"></p><p>经检查服务器地址和端口都没有问题，但是断点进去看了之后发现最终的请求地址端口为字符串HostingServicePort。Clear和Update之后能够正常访问。</p><p><img src="/img/202505081047_1.png" alt="截图"></p><p><img src="/img/202505081048_1.png" alt="截图"></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Unity微信小游戏 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>worldstreamer的Terrain分割原理</title>
       <link href="/2025/04/24/worldstreamer%E7%9A%84Terrain%E5%88%86%E5%89%B2%E5%8E%9F%E7%90%86/"/>
       <url>/2025/04/24/worldstreamer%E7%9A%84Terrain%E5%88%86%E5%89%B2%E5%8E%9F%E7%90%86/</url>
