@@ -6,7 +6,7 @@
   <link href="http://xuexuanfeng.github.io/atom.xml" rel="self"/>
   
   <link href="http://xuexuanfeng.github.io/"/>
-  <updated>2025-05-08T08:19:20.074Z</updated>
+  <updated>2025-07-04T15:38:03.131Z</updated>
   <id>http://xuexuanfeng.github.io/</id>
   
   <author>
@@ -15,6 +15,95 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>双人游戏的分屏处理</title>
+    <link href="http://xuexuanfeng.github.io/2025/07/04/%E5%8F%8C%E4%BA%BA%E6%B8%B8%E6%88%8F%E7%9A%84%E5%88%86%E5%B1%8F%E5%A4%84%E7%90%86/"/>
+    <id>http://xuexuanfeng.github.io/2025/07/04/%E5%8F%8C%E4%BA%BA%E6%B8%B8%E6%88%8F%E7%9A%84%E5%88%86%E5%B1%8F%E5%A4%84%E7%90%86/</id>
+    <published>2025-07-04T14:20:04.000Z</published>
+    <updated>2025-07-04T15:38:03.131Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="双人游戏的分屏处理"><a href="#双人游戏的分屏处理" class="headerlink" title="双人游戏的分屏处理"></a>双人游戏的分屏处理</h1><pre><code>类似于双人成行那种左右两边分屏的功能，可以使用两个摄像机，设置摄像机的viewport Rect来做。但是测下来，drawcall会成倍增加，貌似不是一个很好的解决方案。</code></pre><p><img src="/img/_20250704222449.png" alt="截图"></p><pre><code>尝试使用cinemachine,drawcall并不会减少。使用Split Screen Pro，drawcall会减少些，但是摄像机跟随在demo里面并没有很好的实现。</code></pre>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;双人游戏的分屏处理&quot;&gt;&lt;a href=&quot;#双人游戏的分屏处理&quot; class=&quot;headerlink&quot; title=&quot;双人游戏的分屏处理&quot;&gt;&lt;/a&gt;双人游戏的分屏处理&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;类似于双人成行那种左右两边分屏的功能，可以使用两个摄像机，设置摄像机</summary>
+      
+    
+    
+    
+    
+    <category term="unity游戏功能开发" scheme="http://xuexuanfeng.github.io/tags/unity%E6%B8%B8%E6%88%8F%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>2D游戏开发H2D技术</title>
+    <link href="http://xuexuanfeng.github.io/2025/06/21/2D%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91H2D%E6%8A%80%E6%9C%AF/"/>
+    <id>http://xuexuanfeng.github.io/2025/06/21/2D%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91H2D%E6%8A%80%E6%9C%AF/</id>
+    <published>2025-06-21T03:16:53.000Z</published>
+    <updated>2025-06-24T14:19:28.842Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="学习记录"><a href="#学习记录" class="headerlink" title="学习记录"></a>学习记录</h1><pre><code>最近有接触2D游戏初创，聊到了潜水员大夫以及八方旅人这类的2D游戏，说是用到了叫做H2D的技术，所以就稍微了解了一下，记录一下。</code></pre><ol><li>H2D核心技术构成</li></ol><ul><li>传统2D游戏使用静态精灵（Sprite），而H2D技术通过​​2D光源系统​​（如Unity URP的Freeform&#x2F;Sprite灯光）实现动态阴影、全局光照，增强场景层次感。例如，《空洞骑士》通过多层光源营造氛围。</li><li>​​后期处理效果​​（如景深、色彩校正）提升视觉表现，Unity的URP管线支持此类效果无需复杂编码。</li></ul><ol start="2"><li>骨骼动画与物理融合</li></ol><ul><li>角色动画采用​​骨骼绑定​​（如Unity的2D Animation工具），替代逐帧动画，节省资源并支持更流畅的动作。</li><li>物理引擎集成​​（如Box2D或Unity Rigidbody 2D）实现真实碰撞反馈，例如平台跳跃游戏中的角色与地面互动。</li></ul><ol start="3"><li>​​混合维度效果</li></ol><ul><li>2.5D透视​​：使用正交或倾斜投影（如等轴测视角），在2D平面模拟3D空间深度。《塞尔达传说：众神的三角量》是经典案例。</li><li>粒子系统与着色器​​：通过Shader Graph编写自定义着色器，实现水面折射、动态烟雾等效果，增强沉浸感。</li></ul><h2 id="2D场景的光照"><a href="#2D场景的光照" class="headerlink" title="2D场景的光照"></a>2D场景的光照</h2><ol><li><p>2D光照的设置</p><p> 原来2D光照需要packagemanager中install才能使用，现在已经集成在了universal rp中，Hierarcy右键Light-&gt;2D LIGHT，里面有各种2D光源。<br> 2D的默认材质是不受光照影响的，像默认渲染管线材质球转urp材质球那样，但是新版本我似乎找不到这个批量转换选项，只能选择材质球之后转换。目前看来只要是URP的项目，创建的2D对象都会使用Sprite-Lit-Default这个支持3D灯光的材质球。<br> 2D光源也支持normalmap，可以让2D物体有凹凸感，但是2D光源不支持阴影，所以需要配合3D光源使用。</p><p> 以下是批量转换脚本代码</p></li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">// 文件名：TilemapMaterialConverter.cs</span><br><span class="line"><span class="comment">#if UNITY_EDITOR</span></span><br><span class="line">using UnityEditor;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public class TilemapMaterialConverter</span><br><span class="line">&#123;</span><br><span class="line">    [MenuItem(<span class="string">&quot;Tools/Batch Convert Tilemap Materials&quot;</span>)]</span><br><span class="line">    public static void <span class="function"><span class="title">ConvertMaterials</span></span>()</span><br><span class="line">    &#123;</span><br><span class="line">        // 找到所有旧材质（根据您的原材质命名调整匹配规则）</span><br><span class="line">        string searchFilter = <span class="string">&quot;t:Material&quot;</span>;</span><br><span class="line">        string[] materialPaths = AssetDatabase.FindAssets(searchFilter);</span><br><span class="line"></span><br><span class="line">        int convertedCount = 0;</span><br><span class="line">        Shader targetShader = Shader.Find(<span class="string">&quot;Universal Render Pipeline/2D/Sprite-Lit-Default&quot;</span>);</span><br><span class="line"></span><br><span class="line">        foreach (string guid <span class="keyword">in</span> materialPaths)</span><br><span class="line">        &#123;</span><br><span class="line">            string path = AssetDatabase.GUIDToAssetPath(guid);</span><br><span class="line">            Material mat = AssetDatabase.LoadAssetAtPath&lt;Material&gt;(path);</span><br><span class="line"></span><br><span class="line">            // 仅转换特定条件的材质（调整过滤逻辑）</span><br><span class="line">            <span class="keyword">if</span> (mat.shader.name.Contains(<span class="string">&quot;Sprites/Default&quot;</span>) || </span><br><span class="line">                mat.shader.name.Contains(<span class="string">&quot;Sprites/Diffuse&quot;</span>))</span><br><span class="line">            &#123;</span><br><span class="line">                mat.shader = targetShader;</span><br><span class="line">                EditorUtility.SetDirty(mat);</span><br><span class="line">                convertedCount++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        AssetDatabase.SaveAssets();</span><br><span class="line">        Debug.Log($<span class="string">&quot;转换完成！共转换了&#123;convertedCount&#125;个材质&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#endif</span></span><br></pre></td></tr></table></figure><p><img src="/img/2DLIGHT_EXAMPLE.png" alt="截图"></p><ol start="2"><li>2D光源的性能</li></ol><ul><li>每个 ​​动态光源​​（如 Point Light 2D）会产生 ​​独立的光照贴图​</li><li>最终叠加到场景需进行 ​​Alpha 混合​​，消耗 GPU 带宽</li><li>典型场景：10 个动态光源 &#x3D; 10 次光照纹理绘制 + 1 次主场景绘制</li><li>每个激活的 ​​Light 2D​​ 会遍历其 ​​光照范围内的所有 Renderer​，物体数量越多，CPU 侧计算耗时越高</li></ul><ol start="3"><li>优化策略</li></ol><ul><li>减少动态光源数量​</li><li>使用烘焙光照​(虽然AI给出了烘培的方案，但是我并没有网上查到烘培相关的教程)</li><li>​​合并光源范围​<ol><li>多个相邻光源 → 替换为 ​​1 个覆盖更大区域的点光源​</li><li>或使用 ​​Sprite Mask + 单一光源​​ 模拟局部光照</li></ol></li><li>​​优化光源属性​<ol><li>启用 ​​Light Volume Intensity​​：近亮远暗，降低边缘计算</li><li>关闭不必要光源的 ​​Use Normal Maps​​（如背景光）</li></ol></li><li>材质层级优化​<ol><li>非交互背景​​：使用无光照材质（Sprite&#x2F;Unlit-Default）</li><li>​​动态物体​​：批量使用相同光照材质（减少 Shader 切换）</li></ol></li><li>移除或者禁用远处的额光源</li></ul><h2 id="2D-Animation工具"><a href="#2D-Animation工具" class="headerlink" title="2D Animation工具"></a>2D Animation工具</h2><pre><code>跟着教程跑了一边，大致了解一下，主要是PS源素材进行分层，保存PSB文件。导入unity中，素材图标会类似于FBX，而inspector面板是类似图片的选项，点击openSpriteEditor,打开如下面板</code></pre><p><img src="/img/2DANIMATION_EXAMPLE2.png" alt="截图"></p><pre><code>点击左上角切换skinning Editor，之后的流程就和blender差不多，就是创建骨骼，生成蒙皮，刷上权重，随后图片的顶点坐标就会随着骨骼的偏移而进行移动。完成2D骨骼的处理之后就可以添加animator，录制动画了。因为spine没有怎么用过，不好评论2D Animator和Spine哪个比较好用点，但是B站上有博主对比过，大致的意思就是spine的工作流比起unity来更加人性化、易操作。但是在我看来2D Animaton也是可以用的，避免了spine的学习投入成本。但是2D Animaton我并没有找到换装相关的功能，unity还有一个插件叫Character Creator 2D，可以用来制作2D角色动画以及支持换装。PS:2D Animation可以使用sprite library组件实现换装。换装教程https://www.bilibili.com/video/BV1ht4y177Ev/?spm_id_from=333.1391.0.0&amp;vd_source=757af868ca167689ee49a2bde553ef7f</code></pre>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;学习记录&quot;&gt;&lt;a href=&quot;#学习记录&quot; class=&quot;headerlink&quot; title=&quot;学习记录&quot;&gt;&lt;/a&gt;学习记录&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;最近有接触2D游戏初创，聊到了潜水员大夫以及八方旅人这类的2D游戏，说是用到了叫做H2D的技术，所以就稍微了</summary>
+      
+    
+    
+    
+    
+    <category term="学习记录" scheme="http://xuexuanfeng.github.io/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>微信小游戏的转换遇到的一些问题</title>
+    <link href="http://xuexuanfeng.github.io/2025/05/17/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F%E7%9A%84%E8%BD%AC%E6%8D%A2%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/"/>
+    <id>http://xuexuanfeng.github.io/2025/05/17/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F%E7%9A%84%E8%BD%AC%E6%8D%A2%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/</id>
+    <published>2025-05-16T16:27:16.000Z</published>
+    <updated>2025-05-16T16:39:20.673Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="微信小游戏的转换遇到的一些问题"><a href="#微信小游戏的转换遇到的一些问题" class="headerlink" title="微信小游戏的转换遇到的一些问题"></a>微信小游戏的转换遇到的一些问题</h1><ol><li>抖音小游戏转换之后onApplicationPause不生效，需要改为抖音sdk提供的接口</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">StarkSDK.API.GetStarkAppLifeCycle().OnHide += OnHideFun;</span><br><span class="line">StarkSDK.API.GetStarkAppLifeCycle().OnShowWithDict += OnShowWithDictFun;</span><br><span class="line"></span><br></pre></td></tr></table></figure><ol start="2"><li><p>抖音小游戏PlayerPrefs获取本地缓存，当StarkFileSystemManager.IsDataMigrated()为false的时候重启应用之后会不生效，主要原因是抖音sdk过老，可以写死StarkFileSystemManager.IsDataMigrated为true或者直接调用StarkStorage接口，当然这也是有问题的，比如切换账号之后本地缓存也会丢失，最终方案是使用抖音自带的文件系统。</p></li><li><p>抖音侧边栏是必接入项</p></li><li><p>抖音小游戏没有内购的情况下可以不用接入客服</p></li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;微信小游戏的转换遇到的一些问题&quot;&gt;&lt;a href=&quot;#微信小游戏的转换遇到的一些问题&quot; class=&quot;headerlink&quot; title=&quot;微信小游戏的转换遇到的一些问题&quot;&gt;&lt;/a&gt;微信小游戏的转换遇到的一些问题&lt;/h1&gt;&lt;ol&gt;
+&lt;li&gt;抖音小游戏转换之后onA</summary>
+      
+    
+    
+    
+    
+    <category term="Unity微信小游戏" scheme="http://xuexuanfeng.github.io/tags/Unity%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Unity资源网站</title>
+    <link href="http://xuexuanfeng.github.io/2025/05/13/Unity%E8%B5%84%E6%BA%90%E7%BD%91%E7%AB%99/"/>
+    <id>http://xuexuanfeng.github.io/2025/05/13/Unity%E8%B5%84%E6%BA%90%E7%BD%91%E7%AB%99/</id>
+    <published>2025-05-13T14:28:45.000Z</published>
+    <updated>2025-05-13T14:32:53.633Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Unity资源网站"><a href="#Unity资源网站" class="headerlink" title="Unity资源网站"></a>Unity资源网站</h1><h1 id="2DTilemap相关素材"><a href="#2DTilemap相关素材" class="headerlink" title="2DTilemap相关素材"></a>2DTilemap相关素材</h1><p><a href="https://itch.io/">https://itch.io/</a></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;Unity资源网站&quot;&gt;&lt;a href=&quot;#Unity资源网站&quot; class=&quot;headerlink&quot; title=&quot;Unity资源网站&quot;&gt;&lt;/a&gt;Unity资源网站&lt;/h1&gt;&lt;h1 id=&quot;2DTilemap相关素材&quot;&gt;&lt;a href=&quot;#2DTilemap相关素</summary>
+      
+    
+    
+    
+    
+    <category term="unity资源相关" scheme="http://xuexuanfeng.github.io/tags/unity%E8%B5%84%E6%BA%90%E7%9B%B8%E5%85%B3/"/>
+    
+  </entry>
   
   <entry>
     <title>unity的插值计算</title>
@@ -311,9 +400,9 @@
     <link href="http://xuexuanfeng.github.io/2024/11/04/UnityAI%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7Cursor/"/>
     <id>http://xuexuanfeng.github.io/2024/11/04/UnityAI%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7Cursor/</id>
     <published>2024-11-04T14:45:01.000Z</published>
-    <updated>2024-11-04T14:49:48.176Z</updated>
+    <updated>2025-05-14T14:39:56.795Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="UnityAI编程工具Cursor"><a href="#UnityAI编程工具Cursor" class="headerlink" title="UnityAI编程工具Cursor"></a>UnityAI编程工具Cursor</h1><p>B站闲逛发现了一个很炸裂的工具Cursor，chatGpt的免费平替了</p><p>Cursor下载: <a href="https://www.cursor.com/">https://www.cursor.com/</a><br>Uinty 插件下下载: <a href="https://github.com/boxqkrtm/com.unity.ide.cursor">https://github.com/boxqkrtm/com.unity.ide.cursor</a></p><ol><li><p>先要去Cursor官网下载，需要翻墙。安装完毕之后选择中文。</p></li><li><p>打开unity工程，在packagemanager中install by githuburl 安装unity插件。</p></li><li><p>Preferences中加入Cursor编辑器</p></li><li><p>双击脚本打开编辑器，界面和vs code差不多。在插件扩展栏搜索unity，把相关的插件都装了。</p></li><li><p>Ctrl+L 呼出AI进行对话，生成代码，点击accept复制代码到文件中。</p></li></ol>]]></content>
+    <content type="html"><![CDATA[<h1 id="UnityAI编程工具Cursor"><a href="#UnityAI编程工具Cursor" class="headerlink" title="UnityAI编程工具Cursor"></a>UnityAI编程工具Cursor</h1><p>B站闲逛发现了一个很炸裂的工具Cursor，chatGpt的免费平替了</p><p>Cursor下载: <a href="https://www.cursor.com/">https://www.cursor.com/</a><br>Uinty 插件下下载: <a href="https://github.com/boxqkrtm/com.unity.ide.cursor">https://github.com/boxqkrtm/com.unity.ide.cursor</a><br>或者packagemanager直接输入: <a href="https://github.com/boxqkrtm/com.unity.ide.cursor.git">https://github.com/boxqkrtm/com.unity.ide.cursor.git</a></p><ol><li><p>先要去Cursor官网下载，需要翻墙。安装完毕之后选择中文。</p></li><li><p>打开unity工程，在packagemanager中install by githuburl 安装unity插件。</p></li><li><p>Preferences中加入Cursor编辑器</p></li><li><p>双击脚本打开编辑器，界面和vs code差不多。在插件扩展栏搜索unity，把相关的插件都装了。</p></li><li><p>Ctrl+L 呼出AI进行对话，生成代码，点击accept复制代码到文件中。</p></li></ol>]]></content>
     
     
       
@@ -364,94 +453,6 @@
       
       
     <summary type="html">&lt;h1 id=&quot;Webgl与Js的交互&quot;&gt;&lt;a href=&quot;#Webgl与Js的交互&quot; class=&quot;headerlink&quot; title=&quot;Webgl与Js的交互&quot;&gt;&lt;/a&gt;Webgl与Js的交互&lt;/h1&gt;&lt;p&gt;工作中遇到需求，想要将某些URL进行配置，首先想到的是配置本地数据文</summary>
-      
-    
-    
-    
-    
-    <category term="Unity微信小游戏" scheme="http://xuexuanfeng.github.io/tags/Unity%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Ilruntime调试环境搭建</title>
-    <link href="http://xuexuanfeng.github.io/2024/10/28/Ilruntime%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"/>
-    <id>http://xuexuanfeng.github.io/2024/10/28/Ilruntime%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</id>
-    <published>2024-10-28T14:33:54.000Z</published>
-    <updated>2024-10-28T14:41:48.131Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Ilruntime调试环境搭建"><a href="#Ilruntime调试环境搭建" class="headerlink" title="Ilruntime调试环境搭建"></a>Ilruntime调试环境搭建</h1><p>Ilruntime的安装教程地址<a href="https://ourpalm.github.io/ILRuntime/public/v1/guide/tutorial.html">(点击跳转)</a></p><p>目前看来Ilruntime的调试与xlua相似，都是unity安装完运行环境之后，编辑器内安装对应插件Ilruntime Debugger。据说2.0之前的版本调试插件要上github官网下载对应的插件，2.0以上的直接VS2022扩展里面下载就行，端口就用56000，主要还是StartDebugService调用的时机很关键，太早调用的话会导致打不到断点</p><p>调试器问题解答<a href="https://blog.csdn.net/qq_39162826/article/details/128221561">(点击跳转)</a></p><p>调试条件</p><ol><li><p>安装ILRuntime的VS调试插件（Github上可下载）</p></li><li><p>确定启用DEBUG宏和禁用DISABLE_ILRUNTIME_DEBUG宏</p></li><li><p>检查ILRDomain.DebugService.StartDebugService(56000)是否启用</p></li><li><p>检查PDB是否被加载</p></li><li><p>检查DLL是否为DEBUG版本（提高调试准确性）</p></li></ol><p>以上条件满足还可以支持真机调试</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;Ilruntime调试环境搭建&quot;&gt;&lt;a href=&quot;#Ilruntime调试环境搭建&quot; class=&quot;headerlink&quot; title=&quot;Ilruntime调试环境搭建&quot;&gt;&lt;/a&gt;Ilruntime调试环境搭建&lt;/h1&gt;&lt;p&gt;Ilruntime的安装教程地址&lt;a</summary>
-      
-    
-    
-    
-    
-    <category term="Unity插件工具相关" scheme="http://xuexuanfeng.github.io/tags/Unity%E6%8F%92%E4%BB%B6%E5%B7%A5%E5%85%B7%E7%9B%B8%E5%85%B3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>IlRuntime小游戏转换</title>
-    <link href="http://xuexuanfeng.github.io/2024/10/22/IlRuntime%E5%B0%8F%E6%B8%B8%E6%88%8F%E8%BD%AC%E6%8D%A2/"/>
-    <id>http://xuexuanfeng.github.io/2024/10/22/IlRuntime%E5%B0%8F%E6%B8%B8%E6%88%8F%E8%BD%AC%E6%8D%A2/</id>
-    <published>2024-10-22T14:11:13.000Z</published>
-    <updated>2024-12-08T16:09:06.464Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="IlRuntime小游戏转换工作记录"><a href="#IlRuntime小游戏转换工作记录" class="headerlink" title="IlRuntime小游戏转换工作记录"></a>IlRuntime小游戏转换工作记录</h1><h2 id="week1"><a href="#week1" class="headerlink" title="week1"></a>week1</h2><p>day1 项目移除ILRuntime，提升性能</p><p>day2 config文件资源打包成zip，执行预加载，之后统一解析数据</p><p>day3 FGUI的package数据加入预加载中，调用UIPACKAGE中的异步加载，但是界面没有打开，spineanimation那个玩意儿会报空，得找出解决方案<br>目前看来有三个解决方案：</p><p>先加载完必要的资源然后打开界面—–有很多getwindow之后的调用，而且数量众多<br>使用异步加载界面，然01元素等待加载——日前流程没有跑通，而且spineneanimat1on会报空<br>使用adduisource——目前看来他可以挡住init，但是又很多外部的地方会直接调用界面的public函数</p><p>day4 主要还是使用使用异步加载界面来解决同步加载的问题，主要聚焦于主流程的前两个界面，第一个过场动画已经适配异步了，主界面待调试，目前遇到两个问题，第一个是有很多同步的方式使用spine动画，目前的方案是再3Dloader类中加入委托，将所有需要执行的操作存入委托中，资源加载完毕之后派发事件，通知3DLOADER统一执行委托。但是又发现了一个问题，有很多地方getwindow之后会直接调用界面的内部函数，由于是同步的流程，会导致异步加载完没有完成，panel为空导致报错。</p><h2 id="week2"><a href="#week2" class="headerlink" title="week2"></a>week2</h2><p>day5 早上对其了下spine动画和fgui的异步加载，目前只用createobject就行，他结构初始化和资源加载本身就是分开的逻辑互不影响，这么看来fgui同步改异步还是很方便的，但是进入主界面之后有些spine动画一会显示一会不显示。debug之后发现之前使用的事件派发更新显示逻辑因为Gloader再初始化的时候会调用dispose接口，这就导致了有时候消息发过来了，但是事件侦听被remove了，随即改成了packageitem再gloader注册的时候加入委托对象，这样的好处是packageitem再异步加载完成之后可以精确的派发到指定的gloader对象，而不用像事件派发到每个gloader对象然后在做数据判断。<br>最后开始游戏的时候还会黑屏，需要原项目工程导入ilruntime的debug插件进行逻辑对比。</p><p>day6 早上加入了spinedata的预加载功能，可以特殊化处理一下spine为同步加载，避免了一下繁琐的代码修改，可以说是救命的功能。处理了表格加载异常导致血量血量显示错误的bug。导出webgl版本尝试跑了下，发现浏览器没有log，排查了下log的enable开关没有关，projectsetting的log也打开了，最后原来是filterLogType被设为了只显示error。然后链接登录服务器的时候websocket报错了。目前还在排查。顺带一提webgl导出develope版本后可以模糊的看到报错的函数名，可以说是螺丝壳里做到场了，有用但是不多。</p><p>day7 早上排查了下webgl报错，发现打release版本也可以查看堆栈。只要把publish里的Debug Symbol勾选就会多生成一个文件，里面打开会看到wasm里面的函数ID所对应的函数名，函数里面就需要打log定位了，然后继续说webgl排查问题，游戏底层的log使用stackframe，webgl环境内貌似不支持stackframe，无法实例化，new出来的是null。游戏网络socket通讯用的是tcpclient对象，貌似webgl也支持，传入host之后控制台会报无法解析地址，换成unitywebsocket组件之后就可以正常连接了。不过云开发环境的代理造成了不小的麻烦，打开代理的时候浏览器无法链接服务器。那些localposition为nan的报错也改了，主要是异步加载之后fgui会进行layout组件操作，判断下contentwidth和contentheight如果都为0的话说明正在异步加载，不执行layout操作，资源下载完之后还会进行一次layout的。</p><p>day8 测试发现登陆界面的spine动画有几率会不显示，排查之后发现存在bundle.error不为null的情况，推断应该是本地服务器吞吐量不够，导致的并发下载部分丢失的问题，主要还是代码异步加载里缺少下载失败重新下载的功能，加入之后完美解决。昨天改的GLoader3D中的layout函数会导致进入游戏后unity占用cpu100%,就算停止之后还是100%，很难排查，不过还原代码之后webgl模式下面到没有报错，webgl虽然可以正常游戏，但是有几个奇怪的地方，图片压缩格式一直warning不支持，不管是astc还是etc，然后audio也有一个警告，最要命的是每次加压一张图片就会卡一下，当没有图片解压的时候客户端流畅运行，游戏中也有需要优化的地方，场景物体特效一多就会造成卡顿。</p><p>day9 主要聚焦了下fgui造成的cpu100%问题，通过排除法很难定位到有问题的代码，感觉bug的触发点有很多。奇怪的是cpu虽然占用100%但是编辑器的FPS缺没有降低，而且profile也是很平稳的一个状态，一度怀疑是编辑器的bug。没有找出问题，后面做了下js配置cdn地址。学了一招，原来webgl是可以和js交互的。通过js配置cdn地址可比本地json加载之后解析方便多了。</p><h2 id="week3"><a href="#week3" class="headerlink" title="week3"></a>week3</h2><p>day10 早上做了个图片批处理工具，将所有图片转为astc8*8，并且压缩，bundle总量小了三分之二。研究了下UOS服务，主要的就是搞清楚bucket和relesse版本的关系就可以了，每个release版本就是一个bucket的文件状态，如果bucket里面文件都删光了，不发布release版本，那么还是有文件可以下载下来的。然后开始看抖音sdk的文档，感觉大多和微信差不多，首先官方下载package，导入到工程中，打开BGDT，安装StarkSDKUnityTools之后会又dll的报错，排查下来原来是没有安装editor的安装环境，很好奇为何抖音小游戏和安卓有关系。安装完毕后打开BuildTool，选择运行框架webgl，然后构建WebGL生成zip，再点击开发者工具发布。抖音开发者工具会自动打开项目。感觉很乱，抖音开发者工具把unity工程的根目录作为了小游戏工程的更目录，然后他运行的项目本体就是那个zip文件。</p><p>day11 今天主要主攻小游戏主包瘦身相关的工作，目前定下的方案是将resources文件夹内的图片字体音频打入一个bundle中，然后解包之后进行同步加载处理，这样改动较小，也可以保留项目原有的逻辑。之前createobject执行之后cpu占用100%的bug貌似找到了，在界面资源异步加载处理的地方没有加队列。导致一下子又300多个对象需要reload。加入队列之后继续观察。</p><p>day12 早上收尾了启动界面的开发，实现了resource内资源的剥离，但是界面自适应有点问题，FGUI的界面自适应模式是在代码里面实现的，有个类似于UGUI的canvasscaler的接口。接着加入了bundle下载队列的最大数量限制，不出所料果然是并发下载bundle过多导致的cpu100%。</p><p>day13 发现游戏中有些spine物体会不显示，看了下gowarp下面就没有spine对象，排查之后发现原来每次异步加载之后会调用packitem内的action，但是gloader3d和packitem并不是一一对应的，而是一个packitem公用多个gloader3d对象，从而导致了两次action回调都调用到了一个gloader对象上，导致第二个spine没有被创建。调整了下逻辑，将action改为了delegate，一个spine加载完之后初始化所有用到这个packageitem的loader对象。其中异步加载也做了一系列的优化，当多个组件用到一张图片的时候，第二次下载将会被return，只保留第一次加载的操作，下载完成后统一初始化所有组件。目前看来效果明显。只是进入大厅之后会黑一阵子等待图片加载。</p><p>day14 早上由于外网进步俩服务器，看了会抖音开发者文档，发现有个启动参数可以配置，正好拿来做CDN配置。发散了下思维试了下外网是否可以访问游戏服务器，发现外网并没有503报错，由此判断是unity办公室的网络问题，上报IT后当天解决问题。</p><h2 id="week4"><a href="#week4" class="headerlink" title="week4"></a>week4</h2><p>day15 早上对接了抖音的inputtext，2022及以上的unity和最新的fgui貌似都适配抖音的输入框，但是老版本还是要做一下适配，微信和抖音的实现原理都差不多，主要就是获取焦点之后调用API呼出keyboard。下午发现游戏中的时候有些gloader下面的image会显示不出。debug后发现，主要是游戏中主动调用了seticon，然后又设置了icon的材质球。因为是异步的加载，会导致材质球设置不成功。在设置材质球的代码中加入等待icon加载完全之后再执行逻辑，解决问题。</p><p>day16 小游戏右上角工具图标的界面适配，游戏本身就有这个功能，webgl调整下默认值就行了。小游戏的语言不是中文问题也解决了，原来项目语言是通过application.systemlanguage来判断的，惊了。并且优化了进入大厅的加载，去除了一些不必要的界面初始化。</p><p>day17 添加了异步加载的优化功能，再等待加载的时候放置白色的马赛克图片作为替代。优化了新手引导创建角色的加载，原来gamewindow初始化过早，导致选角界面和战斗界面同时加载造成卡顿，gamewindow的init挪后，选角加载效果变为流畅。但是遇到一个问题，我的手机扫码真机运行之后会报错。DeviceOrientationEvent is not defined。</p><p>day18 DeviceOrientationEvent is not defined的问题找到了，是因为游戏内调用了systemInfo里面的陀螺仪权限，估计是为了做界面的前景与后景结合的立体感。加入了编译宏DOU_YIN,用于区分是否再抖音平台，通过自定义的导出脚本，动态添加编译宏，编译版本成功之后再去除宏，不影响正常的editor使用，为了就是不让douyin的业务逻辑影响到webgl，方便调试。本来想顺便一起通过脚本把plastic的变更项提交了，然后发现不好弄，版本之间的冲突不好处理，不像以前版本机上面无脑用其他人的版本就行了，最终还是决定导出的版本手动提交。还遇到了一个恶心的问题就是新手引导第一关之后必掉线，经过排查发现通关之后只要发送消息，websocke就会close，目前猜测是服务器与客户端协议不一致导致的服务单报错，触发主动断开的逻辑。</p><p>day19 频繁短线的问题找到了，主要是新手引导的时候客户端逻辑不发心跳包，导致下个消息发送到服务器如果间隔时间过长的话服务器会主动断开，新手引导加入心跳解决问题。融合sdk的输入接口接完之后keyboard无法呼出，果断还原成抖音原生的解决方案了，周一的话要一个最新的融合sdk再本地测试一下。</p><h2 id="week5"><a href="#week5" class="headerlink" title="week5"></a>week5</h2><p>day20 早上加入了TTAssetbundle,真机测试之后可以看到cache日志，第二次加载速度明显变快。然后原来融合sdk的inputtext的确是无法接入，他是按照ugui做的，对应的component无法挂在textfield组件，因为fgui的textfield不是mono。下午了解了下抖音侧边栏，抖音审核必备的功能，主要是一个按钮和一个界面组成，目标是引导用户发现并且使用抖音侧边栏。但是sdk给的侧边栏界面是ugui做的，无法和fgui一起自适应。所以决定入口作为fgui动态加载到主界面中，避免后续的频繁改动就不做在主界面里面了。具体做法还需调研。</p><p>day21 考虑了下鉴于项目使用的是FGUI，而融合sdk的通用侧边栏是ugui，最后决定重新依样画葫芦用FGUI做个侧边栏界面，这样既能去除textmeshpro和ugui的package，既缩小了首包大小也缩小了wasm大小，一举两得。侧边栏的真机测试需要联系客服开通测试权限，然后都应打开开发者选项，这样才能再侧边栏看到我的app图标，实现跳转。今天完成了FGUI的界面搭建以及代码编写。</p><p>day22 今天主要是继续侧边栏的调试。再侧边栏测试权限没有审核通过之前可以先用开发者工具测试流程，接入了点击后的奖励领取，以及奖励状态的管理。目前没有服务器，领取奖励之后跳出弹框提示。今天还遇到了个奇怪的东西，进入大厅弹框报错memory out of bound。结果删除library之后重新发布回复正常。再测试时候发现一个问题，用了ttassetbundle之后当bundle有更新，会不去下载而用本地cache，这是因为bundle的名字相同，导致代码判断不需要下载，这样看来bundle的逻辑还得修改，得加上打包option里的md5码后缀才行。然后打bundle的代码也进行了优化，加入了windows和webgl的打包选项，免得我每次都切来切去的打包了，webgl的dxt就不管他了，反正也不打用。</p><p>day23 昨天真机崩溃的bug还是存在，排查下来居然是TTassetBundle的问题，还原成assetbundle之后居然好了，等后面bundle加载md5后缀之后再试试是不是有问题。今天合并了新的版本，代码和资源部分已经全部合并完毕，跑下来进入战斗之后显示有问题，需要再新版本上跑一下看看流程。明天尝试新版本去除ilruntime看看流程对不对。</p><p>day24 合并了新版本的资源，原来的报错是因为有些函数为了性能改为了携程，所以不执行了。处理了下侧边栏按钮的关联自适应，加上了客服按钮并对接功能。下周处理下客服和侧边栏按钮的位置，客服再最左边，应为是个常态的按钮。</p><h2 id="week6"><a href="#week6" class="headerlink" title="week6"></a>week6</h2><p>day25 调整了客服与侧边栏按钮的位置。下午debug了一下断线重连的问题，发现这个游戏不是很需要短线重连，游戏中的断线也只不过是更新下battlecode，客户端主导结果，只顾过再结束的时候要发一个fightresult的消息，只有消息返回结果之<br>后结算流程才会走下去，所以再发送消息断线之后会卡在最后异步，解决方法是发送消息之后注册重连事件侦听，放过程中有重连的操作马上派发事件到gamemode中，执行重连消息的回调，再发一次fightresult。</p><p>day26 今天继续修复了下招财猫的短线重连问题，原来是上一句的侦听没有移除，导致提前触发了result。移除侦听之后恢复正常。sdk相关按钮移到了右边，左侧按钮太多有重叠。明天看一下TTassetbundle，看看能不能重新接入。</p><p>day27 早上看了下bundle的打包流程，原来bundle的命名是更具path而转换成的hash值，所以当内容变化是他的名字是不会改变的。下午重新接入了下TTassetbundle。resourcebundle为了方便更新，后缀加入了版本号，再jengine脚本上配置resourceversion，将所有bundle后缀加入hash值，然后将mainfest.uinty3d文件加入到缓存黑名单，如果这个文件被缓存了那就无法热更新了。这样一来我也理解了为何会有缓存黑名单的存在了。已提交待测试。</p><p>day28 早上bundle加载略微修改了下，resourcebundle加入unload逻辑，测试通过。下午主攻ios内存崩溃问题。测试了一下，dymicmenory再200以下，进入战斗之后到结算崩溃，dymicmenory再200以上进入战斗，直接崩溃，明明还有200多M的内存未使用。增加unityHeap到756之后依然崩溃，估计还是突然加载峰值的问题把，menoryprofile查看内存发现有些界面就算关闭了，但是spine动画的资源依然残留，bundle引用计数是饭否正常运行，主界面是否需要拆分，但是内存回收不处理的话就算拆分了界面还是得崩溃，需要解决的问题还很多。只能先组个demo试一下基础的fgui资源如何释放。</p><p>day29 尝试了下fgui自带的package资源释放可行，spine动画资源释放就比较恶心，有好几个地方引用到了材质球，逐一释清理之后成功释放。对应逻辑已加入项目中。</p><h2 id="week7"><a href="#week7" class="headerlink" title="week7"></a>week7</h2><p>day30 发现resourcebundle卸载之后，进入游戏会有一行报错，排查发现bgm是流失加载，再unloadbundle之后，可能音频流断掉了而导致报错。音频改为不是stream之后解决问题。ios游戏中会出现无法拖动的问题，但是模拟断线重连数次并未重现，真机模拟也是，故而放弃。</p><p>day31 接入了抖音激励广告，很奇怪其他人接的小游戏再播放广告的时候游戏bgm会自动关闭，潮玩团的就不会，不纠结直接代码手动关闭，为了容错，选择静音，再游戏出现问题的时候玩家也可以手动恢复。微信和抖音的貌似有区别，接入微信的时候还得适配一下。逐步开始改QA提出的bug。今天发现了一个神奇的语法，原来ref传入的形参无法再lamd表达式内调用，震惊一百年。</p><h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2><p>之後就是内存优化的问题了，由于月底合同就不续签了，当烂尾处理没什么可以记录得了。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;IlRuntime小游戏转换工作记录&quot;&gt;&lt;a href=&quot;#IlRuntime小游戏转换工作记录&quot; class=&quot;headerlink&quot; title=&quot;IlRuntime小游戏转换工作记录&quot;&gt;&lt;/a&gt;IlRuntime小游戏转换工作记录&lt;/h1&gt;&lt;h2 id=&quot;w</summary>
-      
-    
-    
-    
-    
-    <category term="Unity微信小游戏" scheme="http://xuexuanfeng.github.io/tags/Unity%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unity解压bundle工具</title>
-    <link href="http://xuexuanfeng.github.io/2024/10/22/Unity%E8%A7%A3%E5%8E%8Bbundle%E5%B7%A5%E5%85%B7/"/>
-    <id>http://xuexuanfeng.github.io/2024/10/22/Unity%E8%A7%A3%E5%8E%8Bbundle%E5%B7%A5%E5%85%B7/</id>
-    <published>2024-10-21T16:05:50.000Z</published>
-    <updated>2024-10-21T16:18:57.473Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Unity解压bundle工具"><a href="#Unity解压bundle工具" class="headerlink" title="Unity解压bundle工具"></a>Unity解压bundle工具</h1><p>github工程链接地址<a href="https://github.com/RazTools/Studio/releases/tag/v1.36.00">(点击跳转)</a></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;Unity解压bundle工具&quot;&gt;&lt;a href=&quot;#Unity解压bundle工具&quot; class=&quot;headerlink&quot; title=&quot;Unity解压bundle工具&quot;&gt;&lt;/a&gt;Unity解压bundle工具&lt;/h1&gt;&lt;p&gt;github工程链接地址&lt;a hre</summary>
-      
-    
-    
-    
-    
-    <category term="Unity插件工具相关" scheme="http://xuexuanfeng.github.io/tags/Unity%E6%8F%92%E4%BB%B6%E5%B7%A5%E5%85%B7%E7%9B%B8%E5%85%B3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unity微信小游戏刘海屏适配</title>
-    <link href="http://xuexuanfeng.github.io/2024/10/20/Unity%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F%E5%88%98%E6%B5%B7%E5%B1%8F%E9%80%82%E9%85%8D/"/>
-    <id>http://xuexuanfeng.github.io/2024/10/20/Unity%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F%E5%88%98%E6%B5%B7%E5%B1%8F%E9%80%82%E9%85%8D/</id>
-    <published>2024-10-20T15:38:22.000Z</published>
-    <updated>2024-10-20T15:59:19.456Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Unity原生刘海屏适配方案"><a href="#Unity原生刘海屏适配方案" class="headerlink" title="Unity原生刘海屏适配方案"></a>Unity原生刘海屏适配方案</h1><p>网络文章<a href="https://blog.uwa4d.com/archives/USparkle_UGUI-NGUI.html">(文档链接)</a>，给出了UGUI和NGUI的刘海屏适配方案。主要还是通过获取到的safeArea区域的数据，对锚点做偏移处理。新版本的unity可以直接通过Screen.SafeArea来获取安全区域，并不需要文章内的这么麻烦通过原生底层获取。</p><p>UGUI比较简单，在panel上面挂载mono脚本，对RectTransform的anchorMin和anchorMax进行修改即可。要注意的是Panel节点的锚点需要选择右下角的那个撑满选项，并且四个角的锚点都为0，不然的话效果会不符合预期。<br><img src="/img/20241020234707.png" alt="锚点选项"></p><p>NGUI就比较复杂，需要修改NGUI的源码，大致原理都差不多。</p><h1 id="Unity小游戏刘海屏适配方案"><a href="#Unity小游戏刘海屏适配方案" class="headerlink" title="Unity小游戏刘海屏适配方案"></a>Unity小游戏刘海屏适配方案</h1><p>微信小游戏文档给出了获取safeArea的方案<a href="https://wechat-miniprogram.github.io/minigame-unity-webgl-transform/Design/fixScreen.html">(文档链接)</a></p><p>但是有一点比较奇怪的是，WX.GetWindowInfo().windowWidth与unity中的Screen.width并不相等。</p><p>如图<br><img src="/img/20241020235412.png" alt="小游戏输入日志"></p><p>但是通过计算可以知道WX.GetWindowInfo().windowWidth和Screen.width的比例与WX.GetWindowInfo().windowHeight和Screen.height是相等的，都是0.333333，所以可以通过这个参数因子反向推得得到类似于Screen.SafeArea的结果。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public static Rect WeChatASafeArea;</span><br><span class="line">public static Rect SafeArea</span><br><span class="line">    &#123;</span><br><span class="line">        get</span><br><span class="line">        &#123;</span><br><span class="line"><span class="comment">#if !UNITY_EDITOR &amp;&amp; USE_WECHATMINISDK</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(WeChatASafeArea.width == 0 &amp;&amp; WeChatASafeArea.height == 0)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"><span class="built_in">float</span> radio = (<span class="built_in">float</span>)WX.GetWindowInfo().windowWidth / Screen.width;</span><br><span class="line"></span><br><span class="line">    WeChatASafeArea = new Rect();</span><br><span class="line">WeChatASafeArea.width = (<span class="built_in">float</span>)WX.GetWindowInfo().safeArea.width / radio;</span><br><span class="line">    WeChatASafeArea.height = (<span class="built_in">float</span>)WX.GetWindowInfo().safeArea.height / radio;</span><br><span class="line">WeChatASafeArea.x = (<span class="built_in">float</span>)WX.GetWindowInfo().safeArea.left / radio;</span><br><span class="line">WeChatASafeArea.y = ((float)WX.GetWindowInfo().windowHeight - (float)WX.GetWindowInfo().safeArea.height)/radio;</span><br><span class="line"></span><br><span class="line">UnityEngine.Debug.Log(&quot;WeChatASafeArea---------&quot;+WeChatASafeArea);</span><br><span class="line">&#125;</span><br><span class="line">return WeChatASafeArea;</span><br><span class="line">#else</span><br><span class="line"></span><br><span class="line">            return Screen.safeArea;</span><br><span class="line">#endif</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure><p>导出小游戏后完美解决<br><img src="/img/20241020235827.png" alt="微信开发者工具截图"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;Unity原生刘海屏适配方案&quot;&gt;&lt;a href=&quot;#Unity原生刘海屏适配方案&quot; class=&quot;headerlink&quot; title=&quot;Unity原生刘海屏适配方案&quot;&gt;&lt;/a&gt;Unity原生刘海屏适配方案&lt;/h1&gt;&lt;p&gt;网络文章&lt;a href=&quot;https://b</summary>
       
     
     
