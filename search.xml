@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>Unity游戏开发RTS框选单位功能</title>
+      <link href="/2025/09/04/Unity%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91RTS%E6%A1%86%E9%80%89%E5%8D%95%E4%BD%8D%E5%8A%9F%E8%83%BD/"/>
+      <url>/2025/09/04/Unity%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91RTS%E6%A1%86%E9%80%89%E5%8D%95%E4%BD%8D%E5%8A%9F%E8%83%BD/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Unity游戏开发RTS框选单位功能"><a href="#Unity游戏开发RTS框选单位功能" class="headerlink" title="Unity游戏开发RTS框选单位功能"></a>Unity游戏开发RTS框选单位功能</h1><pre><code>Unity RTS游戏中框选单位的功能实现主要分为两种实现方式1.LineRender2.UGUI的Image组件这两种方式各有优缺点，LineRender可以实时渲染，但是需要手动去控制LineRender的顶点位置，而Image组件则不需要，只需要设置好Image的锚点，然后设置好Image的宽高，就可以实现框选功能了，但是Image组件需要手动去控制Image的宽高，所以需要写一个脚本去控制Image的宽高，然后把Image的宽高赋值给RectTransform的宽高，这样就可以实现框选功能了。两者的原理是一样的，都是先记录鼠标按下时的坐标，然后每帧记录当前鼠标的坐标，通过两点计算Rect矩阵的信息，然后通过Camera.main.ScreenToWorldPoint(screenPoint)将屏幕坐标转换为世界坐标，有了这个关键数据就可以进行UI绘制了。下面主要说一下LineRender的部分代码：</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">//设置loop之后第四个点才会和第一个点重合</span><br><span class="line">lineRenderer.loop = <span class="literal">true</span>;           </span><br><span class="line">lineRenderer.material = lineMaterial;</span><br><span class="line">lineRenderer.startColor = lineColor;</span><br><span class="line">lineRenderer.endColor = lineColor;</span><br><span class="line">lineRenderer.startWidth = lineWidth;</span><br><span class="line">lineRenderer.endWidth = lineWidth;</span><br><span class="line">//这个比较重要，如果不设置成<span class="literal">true</span>，那么lineRenderer的顶点坐标会随着物体的移动而移动，如果设置成<span class="literal">true</span>，那么lineRenderer的顶点坐标就不会随着物体的移动而移动，而是保持不变。</span><br><span class="line">lineRenderer.useWorldSpace = <span class="literal">true</span>;  </span><br><span class="line">lineRenderer.positionCount = 4;</span><br><span class="line">lineRenderer.loop = <span class="literal">true</span>;</span><br><span class="line">lineRenderer.enabled = <span class="literal">false</span>;</span><br></pre></td></tr></table></figure><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 获取屏幕空间中的框选区域</span><br><span class="line">Vector3[] corners = GetSelectionCorners(startMousePosition, currentMousePosition);</span><br><span class="line"></span><br><span class="line">// 将屏幕坐标转换为世界坐标</span><br><span class="line">Vector3[] worldCorners = new Vector3[4];</span><br><span class="line"><span class="keyword">for</span> (int i = 0; i &lt; 4; i++)</span><br><span class="line">&#123;</span><br><span class="line">    worldCorners[i] = ScreenToWorldPoint(corners[i]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">lineRenderer.SetPositions(worldCorners);</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Unity RTS游戏功能开发 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>双人游戏的分屏处理</title>
       <link href="/2025/07/04/%E5%8F%8C%E4%BA%BA%E6%B8%B8%E6%88%8F%E7%9A%84%E5%88%86%E5%B1%8F%E5%A4%84%E7%90%86/"/>
       <url>/2025/07/04/%E5%8F%8C%E4%BA%BA%E6%B8%B8%E6%88%8F%E7%9A%84%E5%88%86%E5%B1%8F%E5%A4%84%E7%90%86/</url>
