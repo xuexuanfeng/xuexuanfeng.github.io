@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>微信小游戏StripEngineCode的问题</title>
+      <link href="/2025/11/11/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8FStripEngineCode%E7%9A%84%E9%97%AE%E9%A2%98/"/>
+      <url>/2025/11/11/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8FStripEngineCode%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[<h1 id="微信小游戏Strip-Engine-Code的问题"><a href="#微信小游戏Strip-Engine-Code的问题" class="headerlink" title="微信小游戏Strip Engine Code的问题"></a>微信小游戏Strip Engine Code的问题</h1><p>今天接入快手小游戏时导出的unity小游戏运行时报错Could not produce class with ID 81。推测class编号为81的类被裁剪掉了，导致没有找到对应代码。</p><p>对应的引擎类ID可以通过 <a href="https://docs.unity3d.com/6000.2/Documentation/Manual/ClassIDReference.html">官网文档</a> 找到，通过文档发现ID为81的类是AudioListener，在vs中找到AudioListener对应的dll为UnityEngine.AudioModule，在工程目录中的link.xml文件加入以下代码</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;assembly fullname=<span class="string">&quot;UnityEngine.AudioModule&quot;</span> preserve=<span class="string">&quot;all&quot;</span>/&gt;</span><br></pre></td></tr></table></figure><p>重新打包测试游戏，问题解决。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Unity微信小游戏 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>NGUI界面SafeArea自适应</title>
       <link href="/2025/09/23/NGUI%E7%95%8C%E9%9D%A2SafeArea%E8%87%AA%E9%80%82%E5%BA%94/"/>
       <url>/2025/09/23/NGUI%E7%95%8C%E9%9D%A2SafeArea%E8%87%AA%E9%80%82%E5%BA%94/</url>

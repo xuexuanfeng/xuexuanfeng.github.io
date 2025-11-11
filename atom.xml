@@ -6,7 +6,7 @@
   <link href="http://xuexuanfeng.github.io/atom.xml" rel="self"/>
   
   <link href="http://xuexuanfeng.github.io/"/>
-  <updated>2025-09-23T14:06:02.219Z</updated>
+  <updated>2025-11-11T14:19:24.616Z</updated>
   <id>http://xuexuanfeng.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>微信小游戏StripEngineCode的问题</title>
+    <link href="http://xuexuanfeng.github.io/2025/11/11/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8FStripEngineCode%E7%9A%84%E9%97%AE%E9%A2%98/"/>
+    <id>http://xuexuanfeng.github.io/2025/11/11/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8FStripEngineCode%E7%9A%84%E9%97%AE%E9%A2%98/</id>
+    <published>2025-11-11T14:08:13.000Z</published>
+    <updated>2025-11-11T14:19:24.616Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="微信小游戏Strip-Engine-Code的问题"><a href="#微信小游戏Strip-Engine-Code的问题" class="headerlink" title="微信小游戏Strip Engine Code的问题"></a>微信小游戏Strip Engine Code的问题</h1><p>今天接入快手小游戏时导出的unity小游戏运行时报错Could not produce class with ID 81。推测class编号为81的类被裁剪掉了，导致没有找到对应代码。</p><p>对应的引擎类ID可以通过 <a href="https://docs.unity3d.com/6000.2/Documentation/Manual/ClassIDReference.html">官网文档</a> 找到，通过文档发现ID为81的类是AudioListener，在vs中找到AudioListener对应的dll为UnityEngine.AudioModule，在工程目录中的link.xml文件加入以下代码</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;assembly fullname=<span class="string">&quot;UnityEngine.AudioModule&quot;</span> preserve=<span class="string">&quot;all&quot;</span>/&gt;</span><br></pre></td></tr></table></figure><p>重新打包测试游戏，问题解决。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;微信小游戏Strip-Engine-Code的问题&quot;&gt;&lt;a href=&quot;#微信小游戏Strip-Engine-Code的问题&quot; class=&quot;headerlink&quot; title=&quot;微信小游戏Strip Engine Code的问题&quot;&gt;&lt;/a&gt;微信小游戏Strip </summary>
+      
+    
+    
+    
+    
+    <category term="Unity微信小游戏" scheme="http://xuexuanfeng.github.io/tags/Unity%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>NGUI界面SafeArea自适应</title>
@@ -436,28 +458,6 @@
     
     
     <category term="游戏开发记录" scheme="http://xuexuanfeng.github.io/tags/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>UnityAI编程工具Cursor</title>
-    <link href="http://xuexuanfeng.github.io/2024/11/04/UnityAI%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7Cursor/"/>
-    <id>http://xuexuanfeng.github.io/2024/11/04/UnityAI%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7Cursor/</id>
-    <published>2024-11-04T14:45:01.000Z</published>
-    <updated>2025-05-14T14:39:56.795Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="UnityAI编程工具Cursor"><a href="#UnityAI编程工具Cursor" class="headerlink" title="UnityAI编程工具Cursor"></a>UnityAI编程工具Cursor</h1><p>B站闲逛发现了一个很炸裂的工具Cursor，chatGpt的免费平替了</p><p>Cursor下载: <a href="https://www.cursor.com/">https://www.cursor.com/</a><br>Uinty 插件下下载: <a href="https://github.com/boxqkrtm/com.unity.ide.cursor">https://github.com/boxqkrtm/com.unity.ide.cursor</a><br>或者packagemanager直接输入: <a href="https://github.com/boxqkrtm/com.unity.ide.cursor.git">https://github.com/boxqkrtm/com.unity.ide.cursor.git</a></p><ol><li><p>先要去Cursor官网下载，需要翻墙。安装完毕之后选择中文。</p></li><li><p>打开unity工程，在packagemanager中install by githuburl 安装unity插件。</p></li><li><p>Preferences中加入Cursor编辑器</p></li><li><p>双击脚本打开编辑器，界面和vs code差不多。在插件扩展栏搜索unity，把相关的插件都装了。</p></li><li><p>Ctrl+L 呼出AI进行对话，生成代码，点击accept复制代码到文件中。</p></li></ol>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;UnityAI编程工具Cursor&quot;&gt;&lt;a href=&quot;#UnityAI编程工具Cursor&quot; class=&quot;headerlink&quot; title=&quot;UnityAI编程工具Cursor&quot;&gt;&lt;/a&gt;UnityAI编程工具Cursor&lt;/h1&gt;&lt;p&gt;B站闲逛发现了一个很</summary>
-      
-    
-    
-    
-    
-    <category term="Unity插件工具相关" scheme="http://xuexuanfeng.github.io/tags/Unity%E6%8F%92%E4%BB%B6%E5%B7%A5%E5%85%B7%E7%9B%B8%E5%85%B3/"/>
     
   </entry>
   
