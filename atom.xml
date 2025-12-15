@@ -6,7 +6,7 @@
   <link href="http://xuexuanfeng.github.io/atom.xml" rel="self"/>
   
   <link href="http://xuexuanfeng.github.io/"/>
-  <updated>2025-11-11T14:19:24.616Z</updated>
+  <updated>2025-12-15T09:31:05.928Z</updated>
   <id>http://xuexuanfeng.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>优化编辑器下UGUI的点击选取对象脚本</title>
+    <link href="http://xuexuanfeng.github.io/2025/12/15/%E4%BC%98%E5%8C%96%E7%BC%96%E8%BE%91%E5%99%A8%E4%B8%8BUGUI%E7%9A%84%E7%82%B9%E5%87%BB%E9%80%89%E5%8F%96%E5%AF%B9%E8%B1%A1%E8%84%9A%E6%9C%AC/"/>
+    <id>http://xuexuanfeng.github.io/2025/12/15/%E4%BC%98%E5%8C%96%E7%BC%96%E8%BE%91%E5%99%A8%E4%B8%8BUGUI%E7%9A%84%E7%82%B9%E5%87%BB%E9%80%89%E5%8F%96%E5%AF%B9%E8%B1%A1%E8%84%9A%E6%9C%AC/</id>
+    <published>2025-12-15T09:19:54.000Z</published>
+    <updated>2025-12-15T09:31:05.928Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="优化编辑器下UGUI点击选取对象脚本"><a href="#优化编辑器下UGUI点击选取对象脚本" class="headerlink" title="优化编辑器下UGUI点击选取对象脚本"></a>优化编辑器下UGUI点击选取对象脚本</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>最近在新项目中接触到一个便捷脚本，在编辑器运行模式下点击Game视图中的UGUI对象，会自动选中对应的GameObject，极大提升了调试效率。</p><h2 id="脚本实现"><a href="#脚本实现" class="headerlink" title="脚本实现"></a>脚本实现</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.EventSystems;</span><br><span class="line"></span><br><span class="line">public class UGUIEditorTool : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    // Start is called before the first frame update</span><br><span class="line">    void <span class="function"><span class="title">Start</span></span>()</span><br><span class="line">    &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">#if UNITY_EDITOR</span></span><br><span class="line"></span><br><span class="line">    [SerializeField]</span><br><span class="line">    <span class="built_in">float</span> PingObjectTime = 1;</span><br><span class="line">    <span class="built_in">float</span> holdTime = 0;</span><br><span class="line">    void <span class="function"><span class="title">Update</span></span>()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (Input.GetMouseButton(0))</span><br><span class="line">        &#123;</span><br><span class="line">            holdTime += Time.deltaTime;</span><br><span class="line">            <span class="keyword">if</span> (holdTime &gt;= PingObjectTime)</span><br><span class="line">            &#123;</span><br><span class="line">                Vector3 mousePos = Input.mousePosition;</span><br><span class="line"></span><br><span class="line">                var go = PointerOverUIGameObject(new Vector2(mousePos.x, mousePos.y));</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (go)</span><br><span class="line">                &#123;</span><br><span class="line">                    UnityEditor.EditorGUIUtility.PingObject(go);</span><br><span class="line">                    //Debug.Log($<span class="string">&quot;Pressed secondary button &#123;Input.mousePosition&#125; &#123;go.name&#125;&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                holdTime = 0;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            holdTime = 0;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">#endif</span></span><br><span class="line"></span><br><span class="line">    GameObject PointerOverUIGameObject(Vector2 screenPos)</span><br><span class="line">    &#123;</span><br><span class="line">        var hitObject = UIRaycast(ScreenPosToPointerData(screenPos));</span><br><span class="line">        <span class="built_in">return</span> hitObject;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    GameObject UIRaycast(PointerEventData pointerData)</span><br><span class="line">    &#123;</span><br><span class="line">        var results = new List&lt;RaycastResult&gt;();</span><br><span class="line">        EventSystem.current.RaycastAll(pointerData, results);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">return</span> results.Count &lt; 1 ? null : results[0].gameObject;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    PointerEventData ScreenPosToPointerData(Vector2 screenPos)</span><br><span class="line">       =&gt; new PointerEventData(EventSystem.current) &#123; position = screenPos &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure><h2 id="优化建议"><a href="#优化建议" class="headerlink" title="优化建议"></a>优化建议</h2><p>在实际项目中可以采用以下优化方案：</p><ol><li><strong>单例模式</strong> - 将脚本作为单例，避免重复实例</li><li><strong>逻辑分离</strong> - 将执行逻辑移至其他Mono脚本的Update方法中</li><li><strong>条件编译</strong> - 通过宏指令控制，减少不必要的性能消耗</li><li><strong>按需执行</strong> - 优化检测频率，避免每帧执行</li></ol><h2 id="使用说明"><a href="#使用说明" class="headerlink" title="使用说明"></a>使用说明</h2><ol><li>将脚本挂载到场景任意GameObject</li><li>设置<code>PingObjectTime</code>参数（默认1秒）</li><li>进入Play模式</li><li>在Game视图中长按UI元素，Hierarchy中会自动选中对应GameObject</li></ol><h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ul><li>仅Unity编辑器运行模式下有效</li><li>需要场景中存在有效的EventSystem</li><li>长按时间可根据需求调整</li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;优化编辑器下UGUI点击选取对象脚本&quot;&gt;&lt;a href=&quot;#优化编辑器下UGUI点击选取对象脚本&quot; class=&quot;headerlink&quot; title=&quot;优化编辑器下UGUI点击选取对象脚本&quot;&gt;&lt;/a&gt;优化编辑器下UGUI点击选取对象脚本&lt;/h1&gt;&lt;h2 id=&quot;概</summary>
+      
+    
+    
+    
+    
+    <category term="Unity插件工具相关" scheme="http://xuexuanfeng.github.io/tags/Unity%E6%8F%92%E4%BB%B6%E5%B7%A5%E5%85%B7%E7%9B%B8%E5%85%B3/"/>
+    
+  </entry>
   
   <entry>
     <title>微信小游戏StripEngineCode的问题</title>
@@ -436,28 +458,6 @@
     
     
     <category term="学习记录" scheme="http://xuexuanfeng.github.io/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>网球游戏开发</title>
-    <link href="http://xuexuanfeng.github.io/2024/12/08/%E7%BD%91%E7%90%83%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/"/>
-    <id>http://xuexuanfeng.github.io/2024/12/08/%E7%BD%91%E7%90%83%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/</id>
-    <published>2024-12-08T15:59:13.000Z</published>
-    <updated>2024-12-19T14:16:38.876Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="网球游戏开发"><a href="#网球游戏开发" class="headerlink" title="网球游戏开发"></a>网球游戏开发</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><pre><code>闲来无事，也是为了个人竞争力提升决定立项一个网球游戏，主要类似于网球王子，网球加入抽象技能。可能比较小众，但是记得某个UP主说过，每个独立游戏开发者都会开发这么一款不赚钱的游戏。</code></pre><h2 id="工作日志"><a href="#工作日志" class="headerlink" title="工作日志"></a>工作日志</h2><ol><li>2024&#x2F;12&#x2F;9</li></ol><ul><li>下载了地图场景以及淘宝游戏源码，击球音效，动作的话准备击球逻辑整理清楚了之后再说，毕竟淘宝也要买8块钱了，如果明天unity那边可以免费下资源的话可以尝试白嫖一下。</li></ul><ol start="2"><li>2024&#x2F;12&#x2F;10</li></ol><ul><li>新建Game场景</li><li>搭建碰撞空气墙</li><li>场景内加入角色</li><li>加入输入系统</li><li>角色可移动</li><li>角色可击球<br>但是网球的运动轨迹还不是抛物线，接下来主要攻克。</li></ul><ol start="3"><li>2024&#x2F;12&#x2F;11</li></ol><ul><li>修复了击球报错bug</li><li>网球的位置重置<br>今天没什么时间制作击球功能，但是白天的网上查询决定使用贝塞尔曲线来实现网球的运动，这样可以做出各种各样的球路了</li></ul><ol start="4"><li>2024&#x2F;12&#x2F;12</li></ol><ul><li>修复击球不符合预期的bug</li><li>增加hit委托事件</li><li>调整击球力度</li><li>增加网球的贝塞尔运动轨迹<br>实测下来网球运动用贝塞尔曲线是可行的，落点很精确，剩下要做的是确认击球后的贝塞尔的中间点位置，以及球落地之后的反弹表现，希望可以通过落点之前前两帧计算出向下以及向前的加速度算出反弹的表现</li></ul><ol start="5"><li>2024&#x2F;12&#x2F;13</li></ol><ul><li>新增控制击球效果的manager类</li><li>增加网球落地之后的反弹效果</li><li>增加对战AI<br>接下来需要复刻一下网球王子的击球，控制击球落点,玩了会游戏，感觉需要做球路的预判，然后再按下击球判断是否可以蓄力，如果可以的话进入蓄力状态，上下左右控制落点</li></ul><ol start="6"><li>2024&#x2F;12&#x2F;14</li></ol><ul><li>击球路线预测</li><li>网球落地抖动的问题</li><li>击球点的边界逻辑，默认击球落点逻辑设定</li><li>运动第一轨迹关闭重力，避免网球运动轨迹不符合预期<br>界限来的就是预判占位是否再预判轨迹上，当符合自动击球逻辑的时候按下击球，移动aim光标的坐标来设定击球点</li></ul><ol start="7"><li>2024&#x2F;12&#x2F;15</li></ol><ul><li>击球点的预测</li><li>预判球路之后的自动位移<br>击球这块做得八九不离十了，接下来需要制作主角的locomotion，淘宝买的八块钱资产貌似不好用，焦虑</li></ul><ol start="8"><li>2024&#x2F;12&#x2F;16</li></ol><ul><li>加入有限状态机，添加待机，行走，击球状态</li><li>调整animator状态树，加入待机，行走，击球动作</li><li>重构击球逻辑<br>重构了击球逻辑，改动较大，之前说资产不好用还是不严谨了，只要生成骨骼信息，动画导出为骨骼动画还是能讲究用一下的，就是动作怪了点，但是不至于一动不动。后续可能需要加上左右击球动作的判断。挥拍的动作也要和网球的路线对应上。</li></ul><ol start="9"><li>2024&#x2F;12&#x2F;17</li></ol><ul><li>击球逻辑优化</li><li>加入反手击球的部分逻辑，包括球路的左右判断，动画的提取<br>今天主要的时间都用来改击球bug了，反手逻辑还没有加入，目前比较尴尬的是预判球路之后自动移动到对应的位置再击球会导致预备动画没播完球就飞过去了。其实是可以打到的。可以考虑击球动画加入layer，一边走一边挥拍。</li></ul><ol start="10"><li>2024&#x2F;12&#x2F;18</li></ol><ul><li>将网球的飞行速度设为恒定，原来是按时间那就导致不懂的路径飞行速度有快有慢</li><li>网球不与角色发生碰撞，避免飞行路径会碰到人导致反弹，之后会做trigger处理<br>现在主要的问题是再预判球路径之后做完表现，球已经飞走了，表现不符合预期。得定一个规则处理下这种情况。<br>用过击球动画分层，让我再按下击球的时候就开始做动作，而不用先跑到目标点再挥拍而耽误时间，手感提升显著。接下来可以开始制作反手击球。</li></ul><ol start="11"><li>2024&#x2F;12&#x2F;19</li></ol><ul><li>反手抽球动画逻辑添加<br>目前处于瓶颈期，对于网球的轨迹存在疑问，不知道目前的网球飞行逻辑对于日后的开发是否可扩展，还是得沉淀沉淀。</li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;网球游戏开发&quot;&gt;&lt;a href=&quot;#网球游戏开发&quot; class=&quot;headerlink&quot; title=&quot;网球游戏开发&quot;&gt;&lt;/a&gt;网球游戏开发&lt;/h1&gt;&lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;</summary>
-      
-    
-    
-    
-    
-    <category term="游戏开发记录" scheme="http://xuexuanfeng.github.io/tags/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/"/>
     
   </entry>
   
