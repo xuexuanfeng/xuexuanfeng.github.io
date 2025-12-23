@@ -1,0 +1,388 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>UniRx使用指南 | 存钱买电瓶车创业的猛男程序员</title><meta name="author" content="xuexuanfeng"><meta name="copyright" content="xuexuanfeng"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="UniRx使用指南最近接入新项目，发现UniRx这个工具，非常好用，可以大大简化代码，提高开发效率。  UniRx响应式编程核心概念与实践指南一、核心思想UniRx将Unity中的一切（事件、生命周期、协程、数据）抽象为可观察的事件流（IObservable&lt;T&gt;），通过声明式的操作符进行组合、转换与订阅，从而编写出更简洁、异步友好、可组合的代码。  二、核心理念：为什么使用UniRx">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UniRx使用指南">
+<meta property="og:url" content="http://xuexuanfeng.github.io/2025/12/23/UniRx%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/index.html">
+<meta property="og:site_name" content="存钱买电瓶车创业的猛男程序员">
+<meta property="og:description" content="UniRx使用指南最近接入新项目，发现UniRx这个工具，非常好用，可以大大简化代码，提高开发效率。  UniRx响应式编程核心概念与实践指南一、核心思想UniRx将Unity中的一切（事件、生命周期、协程、数据）抽象为可观察的事件流（IObservable&lt;T&gt;），通过声明式的操作符进行组合、转换与订阅，从而编写出更简洁、异步友好、可组合的代码。  二、核心理念：为什么使用UniRx">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://xuexuanfeng.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2025-12-23T12:22:33.000Z">
+<meta property="article:modified_time" content="2025-12-23T13:10:38.477Z">
+<meta property="article:author" content="xuexuanfeng">
+<meta property="article:tag" content="Unity插件工具相关">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xuexuanfeng.github.io/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://xuexuanfeng.github.io/2025/12/23/UniRx%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1922483824307707"
+     crossorigin="anonymous">
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'UniRx使用指南',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-12-23 21:10:38'
+}</script><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="存钱买电瓶车创业的猛男程序员" type="application/atom+xml">
+</head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">存钱买电瓶车创业的猛男程序员</span></a><a class="nav-page-title" href="/"><span class="site-name">UniRx使用指南</span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">UniRx使用指南</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-12-23T12:22:33.000Z" title="Created 2025-12-23 20:22:33">2025-12-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-12-23T13:10:38.477Z" title="Updated 2025-12-23 21:10:38">2025-12-23</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="UniRx使用指南"><a href="#UniRx使用指南" class="headerlink" title="UniRx使用指南"></a>UniRx使用指南</h1><pre><code>最近接入新项目，发现UniRx这个工具，非常好用，可以大大简化代码，提高开发效率。
+</code></pre>
+<h2 id="UniRx响应式编程核心概念与实践指南"><a href="#UniRx响应式编程核心概念与实践指南" class="headerlink" title="UniRx响应式编程核心概念与实践指南"></a>UniRx响应式编程核心概念与实践指南</h2><h3 id="一、核心思想"><a href="#一、核心思想" class="headerlink" title="一、核心思想"></a>一、核心思想</h3><pre><code>UniRx将Unity中的一切（事件、生命周期、协程、数据）抽象为可观察的事件流（IObservable&lt;T&gt;），通过声明式的操作符进行组合、转换与订阅，从而编写出更简洁、异步友好、可组合的代码。
+</code></pre>
+<h3 id="二、核心理念：为什么使用UniRx？——“事件流”的意义"><a href="#二、核心理念：为什么使用UniRx？——“事件流”的意义" class="headerlink" title="二、核心理念：为什么使用UniRx？——“事件流”的意义"></a>二、核心理念：为什么使用UniRx？——“事件流”的意义</h3><ol>
+<li>解决Unity传统编程的痛点</li>
+</ol>
+<ul>
+<li>回调地狱：多重异步操作（如UI、网络、资源加载）嵌套，代码难以阅读和维护</li>
+<li>状态管理分散：数据变化需要手动通知多个UI组件或逻辑模块，容易遗漏</li>
+<li>生命周期管理复杂：需要在OnDestroy中手动取消订阅事件、停止协程，易造成内存泄漏</li>
+</ul>
+<ol start="2">
+<li>事件流的优势</li>
+</ol>
+<ul>
+<li>统一异步模型：将时间、输入、碰撞、协程等都视为”流”，用同一套模式处理</li>
+<li>声明式编程：用”要做什么”（如过滤、转换、合并）代替”怎么做”，意图更清晰】</li>
+<li>卓越的可组合性：通过操作符（如Where、Select、Merge）像搭积木一样组合复杂逻辑</li>
+<li>自动化的生命周期管理：与GameObject生命周期绑定，自动处理资源释放</li>
+</ul>
+<h3 id="三、核心基础：Observable与Observer"><a href="#三、核心基础：Observable与Observer" class="headerlink" title="三、核心基础：Observable与Observer"></a>三、核心基础：Observable与Observer</h3><ol>
+<li>核心接口</li>
+</ol>
+<ul>
+<li>IObservable<T>：可观察序列</li>
+<li>IObserver<T>：观察者</li>
+</ul>
+<ol start="2">
+<li>创建流的方法<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Observable.EveryUpdate()      <span class="comment">// 每帧触发</span></span><br><span class="line">Observable.Timer()            <span class="comment">// 定时器</span></span><br><span class="line">Observable.FromCoroutine()    <span class="comment">// 将协程转换为Observable</span></span><br><span class="line">Observable.Return()           <span class="comment">// 返回单个值</span></span><br><span class="line">Observable.Empty()            <span class="comment">// 返回空序列</span></span><br><span class="line">Observable.Never()            <span class="comment">// 永不结束的序列</span></span><br><span class="line">Observable.Throw()            <span class="comment">// 抛出错误的序列</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="四、与Unity生命周期的深度集成"><a href="#四、与Unity生命周期的深度集成" class="headerlink" title="四、与Unity生命周期的深度集成"></a>四、与Unity生命周期的深度集成</h3><ol>
+<li><p>增强的生命周期事件</p>
+<p> 将MonoBehaviour生命周期转化为Observable流：</p>
+</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 传统方式</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span> &#123; Move(); &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// UniRx方式</span></span><br><span class="line"><span class="keyword">this</span>.UpdateAsObservable().Subscribe(_ =&gt; Move()).AddTo(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>可用的生命周期事件</li>
+</ol>
+<ul>
+<li>StartAsObservable()、OnEnableAsObservable()、OnDisableAsObservable()</li>
+<li>FixedUpdateAsObservable()、LateUpdateAsObservable()</li>
+<li>OnDestroyAsObservable()</li>
+<li>OnCollisionEnterAsObservable()、OnTriggerEnterAsObservable()等</li>
+</ul>
+<ol start="3">
+<li><p>自动订阅管理：AddTo方法</p>
+<p> 作用：将订阅（IDisposable）绑定到指定的GameObject或Component。当目标对象被销毁时，订阅自动释放，彻底避免内存泄漏。</p>
+<p> 最佳实践：所有在MonoBehaviour中的订阅，都应使用.AddTo(this)（绑定到Component）或.AddTo(gameObject)（绑定到GameObject）。</p>
+</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 正确示例</span></span><br><span class="line">Observable.Timer(TimeSpan.FromSeconds(<span class="number">5</span>))</span><br><span class="line">    .Subscribe(_ =&gt; Debug.Log(<span class="string">&quot;5秒后执行&quot;</span>))</span><br><span class="line">    .AddTo(<span class="keyword">this</span>); <span class="comment">// 当组件销毁时自动取消订阅</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 危险示例（不推荐）</span></span><br><span class="line">Observable.EveryUpdate()</span><br><span class="line">    .Subscribe(_ =&gt; DoSomething());</span><br><span class="line">    <span class="comment">// 忘记取消订阅 → 内存泄漏！</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="五、强大的操作符（Operators）"><a href="#五、强大的操作符（Operators）" class="headerlink" title="五、强大的操作符（Operators）"></a>五、强大的操作符（Operators）</h3><ol>
+<li><p>与LINQ类似的查询操作符</p>
+<p> 参考文档：<a target="_blank" rel="noopener" href="https://gitee.com/xiaoTNT/uni-rx-intensive-lecture/tree/master">UniRx操作符文档</a></p>
+<p> 过滤操作符</p>
+<ul>
+<li>Where：过滤流中满足条件的元素</li>
+<li>First：取第一个元素</li>
+<li>Last：取最后一个元素</li>
+<li>Skip：跳过前N个元素</li>
+<li>Take：只取前N个元素</li>
+<li>Distinct：去重</li>
+<li>DistinctUntilChanged：跳过连续重复的值</li>
+</ul>
+<p> 投影&#x2F;转换操作符</p>
+<ul>
+<li>Select：将元素转换为另一种形式</li>
+<li>SelectMany：展平嵌套Observable</li>
+<li>Cast：类型转换</li>
+<li>OfType：过滤特定类型</li>
+</ul>
+<p> 组合操作符</p>
+<ul>
+<li>Merge：合并多个流</li>
+<li>Zip：像拉链一样配对（等待所有源头都有新值）</li>
+<li>CombineLatest：任一源头发射时，取各源头最新值组合</li>
+<li>Concat：按顺序连接多个流</li>
+<li>Switch：切换到最新的内部流</li>
+</ul>
+<p> 条件&#x2F;聚合操作符</p>
+<ul>
+<li>TakeUntil：直到另一个流发射时停止</li>
+<li>TakeWhile：当条件满足时继续</li>
+<li>SkipUntil：直到某个条件满足才开始</li>
+<li>Buffer：缓冲一段时间或数量的元素</li>
+<li>Throttle：节流，在指定时间内只取最后一个</li>
+<li>Debounce：防抖，等待一段时间没有新值再发射</li>
+</ul>
+</li>
+<li><p>UniRx特有操作符</p>
+</li>
+</ol>
+<ul>
+<li>FrameInterval：计算帧间隔</li>
+<li>BatchFrame：将帧内的多次发射批量处理</li>
+<li>SampleFrame：按固定帧数采样</li>
+<li>ThrottleFirstFrame：每N帧内只取第一个</li>
+</ul>
+<h3 id="六、核心组件详解"><a href="#六、核心组件详解" class="headerlink" title="六、核心组件详解"></a>六、核心组件详解</h3><ol>
+<li><p>Subject：既是Observable又是Observer</p>
+<p> 类比：类似于C#的事件（event）或Action，是手动控制的事件源。</p>
+<p> 使用：通过执行.OnNext(value)、.OnError()、.OnCompleted()来”推送”事件。</p>
+<p> 类型：</p>
+<ul>
+<li>Subject<T>：基本的Subject</li>
+<li>BehaviorSubject<T>：有当前值，订阅时立即发送当前值</li>
+<li>ReplaySubject<T>：重播历史值（可指定缓冲区大小）</li>
+<li>AsyncSubject<T>：只发布最后一个值（在Complete时）</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建Subject</span></span><br><span class="line"><span class="keyword">var</span> subject = <span class="keyword">new</span> Subject&lt;<span class="built_in">string</span>&gt;();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 订阅</span></span><br><span class="line"><span class="keyword">var</span> subscription = subject.Subscribe(</span><br><span class="line">    msg =&gt; Debug.Log(<span class="string">&quot;收到消息: &quot;</span> + msg),</span><br><span class="line">    error =&gt; Debug.LogError(<span class="string">&quot;错误: &quot;</span> + error),</span><br><span class="line">    () =&gt; Debug.Log(<span class="string">&quot;完成&quot;</span>)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发布</span></span><br><span class="line">subject.OnNext(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">subject.OnNext(<span class="string">&quot;World&quot;</span>);</span><br><span class="line">subject.OnCompleted();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 取消订阅</span></span><br><span class="line">subscription.Dispose();</span><br></pre></td></tr></table></figure>
+
+<pre><code>注意：在UniRx中，通常优先使用ReactiveProperty或从现有事件创建Observable，Subject多用于桥接非响应式代码。
+</code></pre>
+<ol start="2">
+<li><p>ReactiveProperty：响应式属性</p>
+<p> 本质：是一个实现了IObservable<T>的可观察的数据容器。</p>
+<p> 用途：完美用于MVVM（Model-View-ViewModel）模式。当属性值改变时，自动通知所有订阅者。</p>
+</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义响应式属性</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PlayerModel</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> ReactiveProperty&lt;<span class="built_in">int</span>&gt; Hp &#123; <span class="keyword">get</span>; &#125; = <span class="keyword">new</span> ReactiveProperty&lt;<span class="built_in">int</span>&gt;(<span class="number">100</span>);</span><br><span class="line">    <span class="keyword">public</span> ReactiveProperty&lt;<span class="built_in">bool</span>&gt; IsAlive &#123; <span class="keyword">get</span>; &#125; = <span class="keyword">new</span> ReactiveProperty&lt;<span class="built_in">bool</span>&gt;(<span class="literal">true</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在View中绑定</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PlayerView</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">SerializeField</span>] <span class="keyword">private</span> Slider hpSlider;</span><br><span class="line">    [<span class="meta">SerializeField</span>] <span class="keyword">private</span> Text hpText;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> PlayerModel model = <span class="keyword">new</span> PlayerModel();</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 绑定数据到UI</span></span><br><span class="line">        model.Hp.Subscribe(hp =&gt; </span><br><span class="line">        &#123;</span><br><span class="line">            hpSlider.<span class="keyword">value</span> = hp;</span><br><span class="line">            hpText.text = <span class="string">$&quot;HP: <span class="subst">&#123;hp&#125;</span>&quot;</span>;</span><br><span class="line">        &#125;).AddTo(<span class="keyword">this</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 双向绑定</span></span><br><span class="line">        hpSlider.OnValueChangedAsObservable()</span><br><span class="line">            .Subscribe(<span class="keyword">value</span> =&gt; model.Hp.Value = (<span class="built_in">int</span>)<span class="keyword">value</span>)</span><br><span class="line">            .AddTo(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>扩展：
+</code></pre>
+<ul>
+<li>ReactiveCollection<T>：可观察的列表</li>
+<li>ReactiveDictionary&lt;TKey, TValue&gt;：可观察的字典</li>
+<li>ReadOnlyReactiveProperty<T>：只读的响应式属性</li>
+</ul>
+<ol start="3">
+<li><p>MessageBroker：进程内全局事件总线</p>
+<p> 作用：用于模块间松耦合的通信，收发自定义事件，无需相互引用。</p>
+</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义消息类型</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PlayerDeathMessage</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> PlayerName &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> Vector3 DeathPosition &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PlayerDeathMessage</span>(<span class="params"><span class="built_in">string</span> name, Vector3 pos</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        PlayerName = name;</span><br><span class="line">        DeathPosition = pos;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发送消息</span></span><br><span class="line">MessageBroker.Default.Publish(<span class="keyword">new</span> PlayerDeathMessage(<span class="string">&quot;Player1&quot;</span>, transform.position));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 接收消息</span></span><br><span class="line">MessageBroker.Default.Receive&lt;PlayerDeathMessage&gt;()</span><br><span class="line">    .Subscribe(msg =&gt; Debug.Log(<span class="string">$&quot;<span class="subst">&#123;msg.PlayerName&#125;</span> 被击败了！&quot;</span>))</span><br><span class="line">    .AddTo(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+
+<pre><code>注意：MessageBroker是全局的，要小心管理订阅的生命周期，避免内存泄漏。
+</code></pre>
+<h3 id="七、与协程（Coroutine）的协同与对比"><a href="#七、与协程（Coroutine）的协同与对比" class="headerlink" title="七、与协程（Coroutine）的协同与对比"></a>七、与协程（Coroutine）的协同与对比</h3><ol>
+<li>协程的缺陷与Observable的优势对比</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>协程 (IEnumerator)</th>
+<th>UniRx Observable</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>异常处理</td>
+<td>无法用try…catch捕获协程内部的异常，错误会静默消失</td>
+<td>可以使用.Catch操作符优雅地捕获和处理异常，或定义错误流</td>
+</tr>
+<tr>
+<td>组合性</td>
+<td>困难，yield return另一个协程的方式有限</td>
+<td>极强，通过操作符可轻松组合、取消、超时控制</td>
+</tr>
+<tr>
+<td>返回值</td>
+<td>只能通过回调或修改外部变量传递</td>
+<td>流本身即携带值，天然支持</td>
+</tr>
+<tr>
+<td>生命周期</td>
+<td>需要手动停止，易遗漏</td>
+<td>可通过AddTo自动管理</td>
+</tr>
+<tr>
+<td>可读性</td>
+<td>回调嵌套时难以理解</td>
+<td>声明式编程，逻辑清晰</td>
+</tr>
+<tr>
+<td>取消操作</td>
+<td>支持，但需传递CancellationToken</td>
+<td>支持，通过Dispose或TakeUntil等操作符</td>
+</tr>
+</tbody></table>
+<ol start="2">
+<li><p>相互转换</p>
+<p> 协程 → Observable</p>
+</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">IEnumerator <span class="title">LoadResourcesCoroutine</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">1</span></span>)</span>;</span><br><span class="line">    Debug.Log(<span class="string">&quot;加载资源...&quot;</span>);</span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">2</span></span>)</span>;</span><br><span class="line">    Debug.Log(<span class="string">&quot;资源加载完成&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 转换为Observable</span></span><br><span class="line">Observable.FromCoroutine(() =&gt; LoadResourcesCoroutine())</span><br><span class="line">    .Subscribe(</span><br><span class="line">        _ =&gt; &#123; &#125;, <span class="comment">// 每帧执行，通常不需要</span></span><br><span class="line">        () =&gt; Debug.Log(<span class="string">&quot;协程完成，可在这里执行回调&quot;</span>)</span><br><span class="line">    )</span><br><span class="line">    .AddTo(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+<pre><code>好处：可以监听结束、取消，并与其他Observable组合。
+
+Observable → 协程
+</code></pre>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">IEnumerator <span class="title">WaitForPlayerInput</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 将Observable转换为可yield的指令</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> Observable.Timer(TimeSpan.FromSeconds(<span class="number">3</span>))</span><br><span class="line">        .ToYieldInstruction();</span><br><span class="line">    </span><br><span class="line">    Debug.Log(<span class="string">&quot;3秒后执行&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>目的：在现有的协程结构中等待一个异步Observable完成。
+</code></pre>
+<ol start="3">
+<li>异常处理对比</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 协程：无法捕获内部异常</span></span><br><span class="line"><span class="function">IEnumerator <span class="title">ProblematicCoroutine</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;协程内部错误！&quot;</span>);</span><br><span class="line">    <span class="comment">// 这个异常会被Unity静默吞掉，不会在调用处被catch</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Observable：可以优雅处理异常</span></span><br><span class="line">Observable.FromCoroutine(() =&gt; ProblematicCoroutine())</span><br><span class="line">    .Catch((Exception e) =&gt; </span><br><span class="line">    &#123;</span><br><span class="line">        Debug.LogError(<span class="string">$&quot;捕获到异常: <span class="subst">&#123;e.Message&#125;</span>&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> Observable.ReturnUnit(); <span class="comment">// 返回一个空序列继续</span></span><br><span class="line">    &#125;)</span><br><span class="line">    .Subscribe()</span><br><span class="line">    .AddTo(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="八、资源释放与最佳实践"><a href="#八、资源释放与最佳实践" class="headerlink" title="八、资源释放与最佳实践"></a>八、资源释放与最佳实践</h3><ol>
+<li><p>主动释放</p>
+<p> 订阅返回的IDisposable对象，调用其.Dispose()方法可立即取消订阅。</p>
+</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 保存Disposable引用</span></span><br><span class="line"><span class="keyword">private</span> IDisposable subscription;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    subscription = Observable.EveryUpdate()</span><br><span class="line">        .Subscribe(_ =&gt; UpdateLogic());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">OnDestroy</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 主动取消订阅</span></span><br><span class="line">    subscription?.Dispose();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>使用CompositeDisposable管理多个订阅</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> CompositeDisposable disposables = <span class="keyword">new</span> CompositeDisposable();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    Observable.EveryUpdate()</span><br><span class="line">        .Subscribe(_ =&gt; UpdateLogic())</span><br><span class="line">        .AddTo(disposables);</span><br><span class="line">    </span><br><span class="line">    Observable.Timer(TimeSpan.FromSeconds(<span class="number">5</span>))</span><br><span class="line">        .Subscribe(_ =&gt; DoSomething())</span><br><span class="line">        .AddTo(disposables);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">OnDestroy</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 一次性取消所有订阅</span></span><br><span class="line">    disposables.Dispose();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><p>黄金法则</p>
+<p> 始终使用.AddTo(disposable)来管理基于生命周期的订阅，这是避免Unity中内存泄漏的最重要习惯。</p>
+</li>
+</ol>
+<h3 id="九、实际应用示例"><a href="#九、实际应用示例" class="headerlink" title="九、实际应用示例"></a>九、实际应用示例</h3><ol>
+<li>输入处理</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">InputHandler</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 组合键盘输入</span></span><br><span class="line">        <span class="keyword">var</span> moveStream = Observable.EveryUpdate()</span><br><span class="line">            .Select(_ =&gt; <span class="keyword">new</span> Vector2(</span><br><span class="line">                Input.GetAxis(<span class="string">&quot;Horizontal&quot;</span>),</span><br><span class="line">                Input.GetAxis(<span class="string">&quot;Vertical&quot;</span>)</span><br><span class="line">            ))</span><br><span class="line">            .Where(v =&gt; v.magnitude &gt; <span class="number">0.1f</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 节流控制：每秒最多移动10次</span></span><br><span class="line">        moveStream.Throttle(TimeSpan.FromMilliseconds(<span class="number">100</span>))</span><br><span class="line">            .Subscribe(v =&gt; Move(v))</span><br><span class="line">            .AddTo(<span class="keyword">this</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 双击检测</span></span><br><span class="line">        <span class="keyword">var</span> clickStream = Observable.EveryUpdate()</span><br><span class="line">            .Where(_ =&gt; Input.GetMouseButtonDown(<span class="number">0</span>))</span><br><span class="line">            .Timestamp(); <span class="comment">// 添加时间戳</span></span><br><span class="line">        </span><br><span class="line">        clickStream.Buffer(clickStream.Throttle(TimeSpan.FromMilliseconds(<span class="number">250</span>)))</span><br><span class="line">            .Where(list =&gt; list.Count &gt;= <span class="number">2</span>)</span><br><span class="line">            .Subscribe(list =&gt; </span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">var</span> timeDiff = list[<span class="number">1</span>].Timestamp - list[<span class="number">0</span>].Timestamp;</span><br><span class="line">                <span class="keyword">if</span> (timeDiff.TotalMilliseconds &lt; <span class="number">500</span>)</span><br><span class="line">                    Debug.Log(<span class="string">&quot;双击！&quot;</span>);</span><br><span class="line">            &#125;)</span><br><span class="line">            .AddTo(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Move</span>(<span class="params">Vector2 direction</span>)</span> &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>网络请求处理</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ApiService</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IObservable</span>&lt;<span class="title">string</span>&gt; <span class="title">GetUserData</span>(<span class="params"><span class="built_in">int</span> userId</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> Observable.FromCoroutine&lt;<span class="built_in">string</span>&gt;((observer) =&gt; </span><br><span class="line">            GetUserDataCoroutine(userId, observer)</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> IEnumerator <span class="title">GetUserDataCoroutine</span>(<span class="params"><span class="built_in">int</span> userId, IObserver&lt;<span class="built_in">string</span>&gt; observer</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">using</span> (UnityWebRequest request = UnityWebRequest.Get(<span class="string">$&quot;https://api.example.com/users/<span class="subst">&#123;userId&#125;</span>&quot;</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">yield</span> <span class="keyword">return</span> request.SendWebRequest();</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> (request.result == UnityWebRequest.Result.Success)</span><br><span class="line">            &#123;</span><br><span class="line">                observer.OnNext(request.downloadHandler.text);</span><br><span class="line">                observer.OnCompleted();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                observer.OnError(<span class="keyword">new</span> Exception(<span class="string">$&quot;请求失败: <span class="subst">&#123;request.error&#125;</span>&quot;</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">UserManager</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        ApiService api = GetComponent&lt;ApiService&gt;();</span><br><span class="line">        </span><br><span class="line">        api.GetUserData(<span class="number">123</span>)</span><br><span class="line">            .Timeout(TimeSpan.FromSeconds(<span class="number">10</span>)) <span class="comment">// 10秒超时</span></span><br><span class="line">            .Retry(<span class="number">3</span>) <span class="comment">// 失败重试3次</span></span><br><span class="line">            .Subscribe(</span><br><span class="line">                json =&gt; Debug.Log(<span class="string">$&quot;获取到用户数据: <span class="subst">&#123;json&#125;</span>&quot;</span>),</span><br><span class="line">                error =&gt; Debug.LogError(<span class="string">$&quot;获取失败: <span class="subst">&#123;error.Message&#125;</span>&quot;</span>)</span><br><span class="line">            )</span><br><span class="line">            .AddTo(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="十、总结：UniRx事件流思想的终极意义"><a href="#十、总结：UniRx事件流思想的终极意义" class="headerlink" title="十、总结：UniRx事件流思想的终极意义"></a>十、总结：UniRx事件流思想的终极意义</h3><ol>
+<li>异步代码同步写：将复杂的、基于时间或回调的异步逻辑，转化为直观的、顺序声明式的”流水线”，极大提升可读性和可维护性。</li>
+<li>数据与表现绑定：通过ReactiveProperty等，实现数据驱动的UI&#x2F;逻辑更新，减少手动状态同步的bug。</li>
+<li>生命周期安全：通过AddTo机制，将资源管理与Unity对象生命周期深度绑定，编写出更健壮的代码。</li>
+<li>高度的抽象与组合：它提供了一套强大的”语言”（操作符），让你能以极高的效率表达复杂的交互和业务逻辑，是应对现代游戏前端复杂性的利器。</li>
+<li>异常处理能力：相比协程，提供了更强大的错误处理机制，让异步代码更加健壮。</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://xuexuanfeng.github.io">xuexuanfeng</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://xuexuanfeng.github.io/2025/12/23/UniRx%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/">http://xuexuanfeng.github.io/2025/12/23/UniRx%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Unity%E6%8F%92%E4%BB%B6%E5%B7%A5%E5%85%B7%E7%9B%B8%E5%85%B3/">Unity插件工具相关</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="next-post pull-full" href="/2025/12/15/%E4%BC%98%E5%8C%96%E7%BC%96%E8%BE%91%E5%99%A8%E4%B8%8BUGUI%E7%9A%84%E7%82%B9%E5%87%BB%E9%80%89%E5%8F%96%E5%AF%B9%E8%B1%A1%E8%84%9A%E6%9C%AC/" title="优化编辑器下UGUI的点击选取对象脚本"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">优化编辑器下UGUI的点击选取对象脚本</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a href="/2024/10/22/Unity%E8%A7%A3%E5%8E%8Bbundle%E5%B7%A5%E5%85%B7/" title="Unity解压bundle工具"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-22</div><div class="title">Unity解压bundle工具</div></div></a><a href="/2024/10/28/Ilruntime%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="Ilruntime调试环境搭建"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-28</div><div class="title">Ilruntime调试环境搭建</div></div></a><a href="/2024/11/04/UnityAI%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7Cursor/" title="UnityAI编程工具Cursor"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-04</div><div class="title">UnityAI编程工具Cursor</div></div></a><a href="/2024/11/04/%E6%89%B9%E9%87%8F%E4%BF%AE%E6%94%B9%E5%9B%BE%E7%89%87%E8%84%9A%E6%9C%AC/" title="批量修改图片脚本"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-04</div><div class="title">批量修改图片脚本</div></div></a><a href="/2025/01/10/TextMeshPro%E4%B8%AD%E6%96%87%E5%AD%97%E4%BD%93%E7%9A%84%E5%A4%84%E7%90%86/" title="TextMeshPro中文字体的处理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-10</div><div class="title">TextMeshPro中文字体的处理</div></div></a><a href="/2025/12/15/%E4%BC%98%E5%8C%96%E7%BC%96%E8%BE%91%E5%99%A8%E4%B8%8BUGUI%E7%9A%84%E7%82%B9%E5%87%BB%E9%80%89%E5%8F%96%E5%AF%B9%E8%B1%A1%E8%84%9A%E6%9C%AC/" title="优化编辑器下UGUI的点击选取对象脚本"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-15</div><div class="title">优化编辑器下UGUI的点击选取对象脚本</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xuexuanfeng</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">32</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xuexuanfeng/"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">炸裂的2.5次元空间</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#UniRx%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97"><span class="toc-number">1.</span> <span class="toc-text">UniRx使用指南</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#UniRx%E5%93%8D%E5%BA%94%E5%BC%8F%E7%BC%96%E7%A8%8B%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E4%B8%8E%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97"><span class="toc-number">1.1.</span> <span class="toc-text">UniRx响应式编程核心概念与实践指南</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.1.1.</span> <span class="toc-text">一、核心思想</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%A0%B8%E5%BF%83%E7%90%86%E5%BF%B5%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8UniRx%EF%BC%9F%E2%80%94%E2%80%94%E2%80%9C%E4%BA%8B%E4%BB%B6%E6%B5%81%E2%80%9D%E7%9A%84%E6%84%8F%E4%B9%89"><span class="toc-number">1.1.2.</span> <span class="toc-text">二、核心理念：为什么使用UniRx？——“事件流”的意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%A0%B8%E5%BF%83%E5%9F%BA%E7%A1%80%EF%BC%9AObservable%E4%B8%8EObserver"><span class="toc-number">1.1.3.</span> <span class="toc-text">三、核心基础：Observable与Observer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E4%B8%8EUnity%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%9A%84%E6%B7%B1%E5%BA%A6%E9%9B%86%E6%88%90"><span class="toc-number">1.1.4.</span> <span class="toc-text">四、与Unity生命周期的深度集成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%BC%BA%E5%A4%A7%E7%9A%84%E6%93%8D%E4%BD%9C%E7%AC%A6%EF%BC%88Operators%EF%BC%89"><span class="toc-number">1.1.5.</span> <span class="toc-text">五、强大的操作符（Operators）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.1.6.</span> <span class="toc-text">六、核心组件详解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E4%B8%8E%E5%8D%8F%E7%A8%8B%EF%BC%88Coroutine%EF%BC%89%E7%9A%84%E5%8D%8F%E5%90%8C%E4%B8%8E%E5%AF%B9%E6%AF%94"><span class="toc-number">1.1.7.</span> <span class="toc-text">七、与协程（Coroutine）的协同与对比</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E8%B5%84%E6%BA%90%E9%87%8A%E6%94%BE%E4%B8%8E%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="toc-number">1.1.8.</span> <span class="toc-text">八、资源释放与最佳实践</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.1.9.</span> <span class="toc-text">九、实际应用示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E6%80%BB%E7%BB%93%EF%BC%9AUniRx%E4%BA%8B%E4%BB%B6%E6%B5%81%E6%80%9D%E6%83%B3%E7%9A%84%E7%BB%88%E6%9E%81%E6%84%8F%E4%B9%89"><span class="toc-number">1.1.10.</span> <span class="toc-text">十、总结：UniRx事件流思想的终极意义</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/12/23/UniRx%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" title="UniRx使用指南">UniRx使用指南</a><time datetime="2025-12-23T12:22:33.000Z" title="Created 2025-12-23 20:22:33">2025-12-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/12/15/%E4%BC%98%E5%8C%96%E7%BC%96%E8%BE%91%E5%99%A8%E4%B8%8BUGUI%E7%9A%84%E7%82%B9%E5%87%BB%E9%80%89%E5%8F%96%E5%AF%B9%E8%B1%A1%E8%84%9A%E6%9C%AC/" title="优化编辑器下UGUI的点击选取对象脚本">优化编辑器下UGUI的点击选取对象脚本</a><time datetime="2025-12-15T09:19:54.000Z" title="Created 2025-12-15 17:19:54">2025-12-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/11/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8FStripEngineCode%E7%9A%84%E9%97%AE%E9%A2%98/" title="微信小游戏StripEngineCode的问题">微信小游戏StripEngineCode的问题</a><time datetime="2025-11-11T14:08:13.000Z" title="Created 2025-11-11 22:08:13">2025-11-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/09/23/NGUI%E7%95%8C%E9%9D%A2SafeArea%E8%87%AA%E9%80%82%E5%BA%94/" title="NGUI界面SafeArea自适应">NGUI界面SafeArea自适应</a><time datetime="2025-09-23T13:32:00.000Z" title="Created 2025-09-23 21:32:00">2025-09-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/09/04/Unity%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91RTS%E6%A1%86%E9%80%89%E5%8D%95%E4%BD%8D%E5%8A%9F%E8%83%BD/" title="Unity游戏开发RTS框选单位功能">Unity游戏开发RTS框选单位功能</a><time datetime="2025-09-04T15:08:32.000Z" title="Created 2025-09-04 23:08:32">2025-09-04</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By xuexuanfeng</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
