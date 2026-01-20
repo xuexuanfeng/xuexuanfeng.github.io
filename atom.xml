@@ -6,7 +6,7 @@
   <link href="http://xuexuanfeng.github.io/atom.xml" rel="self"/>
   
   <link href="http://xuexuanfeng.github.io/"/>
-  <updated>2025-12-23T13:10:38.477Z</updated>
+  <updated>2026-01-20T13:33:56.807Z</updated>
   <id>http://xuexuanfeng.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>unity导出urp小游戏在微信开发者工具中黑屏</title>
+    <link href="http://xuexuanfeng.github.io/2026/01/20/unity%E5%AF%BC%E5%87%BAurp%E5%B0%8F%E6%B8%B8%E6%88%8F%E5%9C%A8%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E4%B8%AD%E9%BB%91%E5%B1%8F/"/>
+    <id>http://xuexuanfeng.github.io/2026/01/20/unity%E5%AF%BC%E5%87%BAurp%E5%B0%8F%E6%B8%B8%E6%88%8F%E5%9C%A8%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E4%B8%AD%E9%BB%91%E5%B1%8F/</id>
+    <published>2026-01-20T13:26:20.000Z</published>
+    <updated>2026-01-20T13:33:56.807Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="unity导出urp小游戏在微信开发者工具中黑屏"><a href="#unity导出urp小游戏在微信开发者工具中黑屏" class="headerlink" title="unity导出urp小游戏在微信开发者工具中黑屏"></a>unity导出urp小游戏在微信开发者工具中黑屏</h1><p>unity2022.3.45f1版本导出urp小游戏在微信开发者工具中黑屏，但是手机调试运行却又可以正常运行。</p><p>重新创建新工程导出空场景，结果还是黑屏。</p><p>微信社群查到有类似问题，但是官方并没有回复。团结社群也能查到类似问题，得到回复说是新版的团结引擎已修复，随即使用团结引擎创建urp工程导出微信小游戏，运行正常。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;unity导出urp小游戏在微信开发者工具中黑屏&quot;&gt;&lt;a href=&quot;#unity导出urp小游戏在微信开发者工具中黑屏&quot; class=&quot;headerlink&quot; title=&quot;unity导出urp小游戏在微信开发者工具中黑屏&quot;&gt;&lt;/a&gt;unity导出urp小游戏在</summary>
+      
+    
+    
+    
+    
+    <category term="unity开发遇到的问题" scheme="http://xuexuanfeng.github.io/tags/unity%E5%BC%80%E5%8F%91%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/"/>
+    
+  </entry>
   
   <entry>
     <title>UniRx使用指南</title>
@@ -435,28 +457,6 @@
     
     
     <category term="Unity插件工具相关" scheme="http://xuexuanfeng.github.io/tags/Unity%E6%8F%92%E4%BB%B6%E5%B7%A5%E5%85%B7%E7%9B%B8%E5%85%B3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>捏脸系统</title>
-    <link href="http://xuexuanfeng.github.io/2024/12/19/%E6%8D%8F%E8%84%B8%E7%B3%BB%E7%BB%9F/"/>
-    <id>http://xuexuanfeng.github.io/2024/12/19/%E6%8D%8F%E8%84%B8%E7%B3%BB%E7%BB%9F/</id>
-    <published>2024-12-19T15:37:42.000Z</published>
-    <updated>2025-02-04T07:04:40.167Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="捏脸系统学习开发"><a href="#捏脸系统学习开发" class="headerlink" title="捏脸系统学习开发"></a>捏脸系统学习开发</h1><h2 id="学习日志"><a href="#学习日志" class="headerlink" title="学习日志"></a>学习日志</h2><ul><li><p>目前看下来主要的流程是模型导入到blend中，添加blendshape参数，然后导入unity中，通过unity中UI动态设置skinmesh里的blendshape参数来调整模型的容貌</p></li><li><p>blender里面的值是0-1，unity中对应的是0-100</p></li><li><p>unity里面有个插件叫UMA，可以做blendershape，还能有换装的效果，具体的话以后单独开一期研究下</p></li><li><p>决定先将大奉的捏脸模块单独拿出来，用于以后的修改</p></li><li><p>大奉家里老版本，需要晚上更新一下最新版本，但是半天的时候看了下uma发现这个插件可以满足捏脸的一切需求，决定深入研究一下。</p></li><li><p>由于先看了uma，感觉这个插件大有可为，系统分为recipe，slot，overlay，整体撸了一遍插件使用，但是模型制作的pipline还是有所缺失，补习blender中。</p></li><li><p>gitee测试项目地址<a href="https://gitee.com/xuexuanfeng/unity_-uma.git">https://gitee.com/xuexuanfeng/unity_-uma.git</a></p></li><li><p>目前来看制作衣橱配方再blend里面需要将导出fbx设为6.1，如果是7.4的话坐标会对不上，目前还不知到原理</p></li><li><p>免费模型网站 Daz3D，Adobe fuse已经停止服务了，相对的可以再stream上面找到Mixamo fuse，但是steam版本没法直接上传mixamo，老是提示登陆203.</p></li><li><p>Mixamo fuse由于不能再软件里上传mixamo，所以得导出obj去上传绑定骨骼，这样的话贴图就没了</p></li><li><p>经过尝试，youtube教程上的模型导出流程已经过时了，故而用character creator导出FBX，导入blender之后2.X版本材质丢失，4.x版本显示正常，而且也有blendshape。看来新的工作流与教程上的blender2还是有出路的，但是blender4的界面和2又很不一样，学习过程中会比较绕。目前看来也没什么好的解决办法，只能用4.x处理模型了。</p></li><li><p>自己创建baserace，bone的结构很重要，必须要又Global和Position节点。另一步是分割网格，把一个body分割成头身体手脚这些部分</p></li><li><p>再制作base race的时候发现一个问题，当一个mesh里面又多个submesh的时候转换slot会有问题，比如说两个眼珠子，他只会转一个眼珠子出来，目前看来解决办法是将blender里面的材质球全部删除就没有submesh，导出的fbx为白模，这样的话mesh也就没有submesh了，但是这样材质需要合并，合并材质B站上也有教学，比较麻烦，就先无视了</p></li><li><p>大风捏脸系统的界面lua转C#处理</p></li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;捏脸系统学习开发&quot;&gt;&lt;a href=&quot;#捏脸系统学习开发&quot; class=&quot;headerlink&quot; title=&quot;捏脸系统学习开发&quot;&gt;&lt;/a&gt;捏脸系统学习开发&lt;/h1&gt;&lt;h2 id=&quot;学习日志&quot;&gt;&lt;a href=&quot;#学习日志&quot; class=&quot;headerlink&quot; </summary>
-      
-    
-    
-    
-    
-    <category term="学习记录" scheme="http://xuexuanfeng.github.io/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"/>
     
   </entry>
   

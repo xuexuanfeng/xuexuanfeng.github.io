@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>unity导出urp小游戏在微信开发者工具中黑屏</title>
+      <link href="/2026/01/20/unity%E5%AF%BC%E5%87%BAurp%E5%B0%8F%E6%B8%B8%E6%88%8F%E5%9C%A8%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E4%B8%AD%E9%BB%91%E5%B1%8F/"/>
+      <url>/2026/01/20/unity%E5%AF%BC%E5%87%BAurp%E5%B0%8F%E6%B8%B8%E6%88%8F%E5%9C%A8%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E4%B8%AD%E9%BB%91%E5%B1%8F/</url>
+      
+        <content type="html"><![CDATA[<h1 id="unity导出urp小游戏在微信开发者工具中黑屏"><a href="#unity导出urp小游戏在微信开发者工具中黑屏" class="headerlink" title="unity导出urp小游戏在微信开发者工具中黑屏"></a>unity导出urp小游戏在微信开发者工具中黑屏</h1><p>unity2022.3.45f1版本导出urp小游戏在微信开发者工具中黑屏，但是手机调试运行却又可以正常运行。</p><p>重新创建新工程导出空场景，结果还是黑屏。</p><p>微信社群查到有类似问题，但是官方并没有回复。团结社群也能查到类似问题，得到回复说是新版的团结引擎已修复，随即使用团结引擎创建urp工程导出微信小游戏，运行正常。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> unity开发遇到的问题 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>UniRx使用指南</title>
       <link href="/2025/12/23/UniRx%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"/>
       <url>/2025/12/23/UniRx%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</url>
