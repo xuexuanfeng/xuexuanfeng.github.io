@@ -384,25 +384,6 @@
     
     
     <entry>
-      <title>捏脸系统</title>
-      <link href="/2024/12/19/%E6%8D%8F%E8%84%B8%E7%B3%BB%E7%BB%9F/"/>
-      <url>/2024/12/19/%E6%8D%8F%E8%84%B8%E7%B3%BB%E7%BB%9F/</url>
-      
-        <content type="html"><![CDATA[<h1 id="捏脸系统学习开发"><a href="#捏脸系统学习开发" class="headerlink" title="捏脸系统学习开发"></a>捏脸系统学习开发</h1><h2 id="学习日志"><a href="#学习日志" class="headerlink" title="学习日志"></a>学习日志</h2><ul><li><p>目前看下来主要的流程是模型导入到blend中，添加blendshape参数，然后导入unity中，通过unity中UI动态设置skinmesh里的blendshape参数来调整模型的容貌</p></li><li><p>blender里面的值是0-1，unity中对应的是0-100</p></li><li><p>unity里面有个插件叫UMA，可以做blendershape，还能有换装的效果，具体的话以后单独开一期研究下</p></li><li><p>决定先将大奉的捏脸模块单独拿出来，用于以后的修改</p></li><li><p>大奉家里老版本，需要晚上更新一下最新版本，但是半天的时候看了下uma发现这个插件可以满足捏脸的一切需求，决定深入研究一下。</p></li><li><p>由于先看了uma，感觉这个插件大有可为，系统分为recipe，slot，overlay，整体撸了一遍插件使用，但是模型制作的pipline还是有所缺失，补习blender中。</p></li><li><p>gitee测试项目地址<a href="https://gitee.com/xuexuanfeng/unity_-uma.git">https://gitee.com/xuexuanfeng/unity_-uma.git</a></p></li><li><p>目前来看制作衣橱配方再blend里面需要将导出fbx设为6.1，如果是7.4的话坐标会对不上，目前还不知到原理</p></li><li><p>免费模型网站 Daz3D，Adobe fuse已经停止服务了，相对的可以再stream上面找到Mixamo fuse，但是steam版本没法直接上传mixamo，老是提示登陆203.</p></li><li><p>Mixamo fuse由于不能再软件里上传mixamo，所以得导出obj去上传绑定骨骼，这样的话贴图就没了</p></li><li><p>经过尝试，youtube教程上的模型导出流程已经过时了，故而用character creator导出FBX，导入blender之后2.X版本材质丢失，4.x版本显示正常，而且也有blendshape。看来新的工作流与教程上的blender2还是有出路的，但是blender4的界面和2又很不一样，学习过程中会比较绕。目前看来也没什么好的解决办法，只能用4.x处理模型了。</p></li><li><p>自己创建baserace，bone的结构很重要，必须要又Global和Position节点。另一步是分割网格，把一个body分割成头身体手脚这些部分</p></li><li><p>再制作base race的时候发现一个问题，当一个mesh里面又多个submesh的时候转换slot会有问题，比如说两个眼珠子，他只会转一个眼珠子出来，目前看来解决办法是将blender里面的材质球全部删除就没有submesh，导出的fbx为白模，这样的话mesh也就没有submesh了，但是这样材质需要合并，合并材质B站上也有教学，比较麻烦，就先无视了</p></li><li><p>大风捏脸系统的界面lua转C#处理</p></li></ul>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> 学习记录 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>Dots学习心得</title>
       <link href="/2024/12/18/Dots%E5%AD%A6%E4%B9%A0%E5%BF%83%E5%BE%97/"/>
       <url>/2024/12/18/Dots%E5%AD%A6%E4%B9%A0%E5%BF%83%E5%BE%97/</url>
@@ -414,25 +395,6 @@
         <tags>
             
             <tag> 学习记录 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>网球游戏开发</title>
-      <link href="/2024/12/08/%E7%BD%91%E7%90%83%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/"/>
-      <url>/2024/12/08/%E7%BD%91%E7%90%83%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/</url>
-      
-        <content type="html"><![CDATA[<h1 id="网球游戏开发"><a href="#网球游戏开发" class="headerlink" title="网球游戏开发"></a>网球游戏开发</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><pre><code>闲来无事，也是为了个人竞争力提升决定立项一个网球游戏，主要类似于网球王子，网球加入抽象技能。可能比较小众，但是记得某个UP主说过，每个独立游戏开发者都会开发这么一款不赚钱的游戏。</code></pre><h2 id="工作日志"><a href="#工作日志" class="headerlink" title="工作日志"></a>工作日志</h2><ol><li>2024&#x2F;12&#x2F;9</li></ol><ul><li>下载了地图场景以及淘宝游戏源码，击球音效，动作的话准备击球逻辑整理清楚了之后再说，毕竟淘宝也要买8块钱了，如果明天unity那边可以免费下资源的话可以尝试白嫖一下。</li></ul><ol start="2"><li>2024&#x2F;12&#x2F;10</li></ol><ul><li>新建Game场景</li><li>搭建碰撞空气墙</li><li>场景内加入角色</li><li>加入输入系统</li><li>角色可移动</li><li>角色可击球<br>但是网球的运动轨迹还不是抛物线，接下来主要攻克。</li></ul><ol start="3"><li>2024&#x2F;12&#x2F;11</li></ol><ul><li>修复了击球报错bug</li><li>网球的位置重置<br>今天没什么时间制作击球功能，但是白天的网上查询决定使用贝塞尔曲线来实现网球的运动，这样可以做出各种各样的球路了</li></ul><ol start="4"><li>2024&#x2F;12&#x2F;12</li></ol><ul><li>修复击球不符合预期的bug</li><li>增加hit委托事件</li><li>调整击球力度</li><li>增加网球的贝塞尔运动轨迹<br>实测下来网球运动用贝塞尔曲线是可行的，落点很精确，剩下要做的是确认击球后的贝塞尔的中间点位置，以及球落地之后的反弹表现，希望可以通过落点之前前两帧计算出向下以及向前的加速度算出反弹的表现</li></ul><ol start="5"><li>2024&#x2F;12&#x2F;13</li></ol><ul><li>新增控制击球效果的manager类</li><li>增加网球落地之后的反弹效果</li><li>增加对战AI<br>接下来需要复刻一下网球王子的击球，控制击球落点,玩了会游戏，感觉需要做球路的预判，然后再按下击球判断是否可以蓄力，如果可以的话进入蓄力状态，上下左右控制落点</li></ul><ol start="6"><li>2024&#x2F;12&#x2F;14</li></ol><ul><li>击球路线预测</li><li>网球落地抖动的问题</li><li>击球点的边界逻辑，默认击球落点逻辑设定</li><li>运动第一轨迹关闭重力，避免网球运动轨迹不符合预期<br>界限来的就是预判占位是否再预判轨迹上，当符合自动击球逻辑的时候按下击球，移动aim光标的坐标来设定击球点</li></ul><ol start="7"><li>2024&#x2F;12&#x2F;15</li></ol><ul><li>击球点的预测</li><li>预判球路之后的自动位移<br>击球这块做得八九不离十了，接下来需要制作主角的locomotion，淘宝买的八块钱资产貌似不好用，焦虑</li></ul><ol start="8"><li>2024&#x2F;12&#x2F;16</li></ol><ul><li>加入有限状态机，添加待机，行走，击球状态</li><li>调整animator状态树，加入待机，行走，击球动作</li><li>重构击球逻辑<br>重构了击球逻辑，改动较大，之前说资产不好用还是不严谨了，只要生成骨骼信息，动画导出为骨骼动画还是能讲究用一下的，就是动作怪了点，但是不至于一动不动。后续可能需要加上左右击球动作的判断。挥拍的动作也要和网球的路线对应上。</li></ul><ol start="9"><li>2024&#x2F;12&#x2F;17</li></ol><ul><li>击球逻辑优化</li><li>加入反手击球的部分逻辑，包括球路的左右判断，动画的提取<br>今天主要的时间都用来改击球bug了，反手逻辑还没有加入，目前比较尴尬的是预判球路之后自动移动到对应的位置再击球会导致预备动画没播完球就飞过去了。其实是可以打到的。可以考虑击球动画加入layer，一边走一边挥拍。</li></ul><ol start="10"><li>2024&#x2F;12&#x2F;18</li></ol><ul><li>将网球的飞行速度设为恒定，原来是按时间那就导致不懂的路径飞行速度有快有慢</li><li>网球不与角色发生碰撞，避免飞行路径会碰到人导致反弹，之后会做trigger处理<br>现在主要的问题是再预判球路径之后做完表现，球已经飞走了，表现不符合预期。得定一个规则处理下这种情况。<br>用过击球动画分层，让我再按下击球的时候就开始做动作，而不用先跑到目标点再挥拍而耽误时间，手感提升显著。接下来可以开始制作反手击球。</li></ul><ol start="11"><li>2024&#x2F;12&#x2F;19</li></ol><ul><li>反手抽球动画逻辑添加<br>目前处于瓶颈期，对于网球的轨迹存在疑问，不知道目前的网球飞行逻辑对于日后的开发是否可扩展，还是得沉淀沉淀。</li></ul>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> 游戏开发记录 </tag>
             
         </tags>
       
@@ -606,19 +568,6 @@
             <tag> unity优化 </tag>
             
         </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Hello World</title>
-      <link href="/2024/10/11/hello-world/"/>
-      <url>/2024/10/11/hello-world/</url>
-      
-        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
-      
-      
       
     </entry>
     
