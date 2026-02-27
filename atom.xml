@@ -6,7 +6,7 @@
   <link href="http://xuexuanfeng.github.io/atom.xml" rel="self"/>
   
   <link href="http://xuexuanfeng.github.io/"/>
-  <updated>2026-01-20T13:33:56.807Z</updated>
+  <updated>2026-02-27T10:39:45.422Z</updated>
   <id>http://xuexuanfeng.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>微信抖音小游戏的截屏分享</title>
+    <link href="http://xuexuanfeng.github.io/2026/02/27/%E5%BE%AE%E4%BF%A1%E6%8A%96%E9%9F%B3%E5%B0%8F%E6%B8%B8%E6%88%8F%E7%9A%84%E6%88%AA%E5%B1%8F%E5%88%86%E4%BA%AB/"/>
+    <id>http://xuexuanfeng.github.io/2026/02/27/%E5%BE%AE%E4%BF%A1%E6%8A%96%E9%9F%B3%E5%B0%8F%E6%B8%B8%E6%88%8F%E7%9A%84%E6%88%AA%E5%B1%8F%E5%88%86%E4%BA%AB/</id>
+    <published>2026-02-27T10:36:02.000Z</published>
+    <updated>2026-02-27T10:39:45.422Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Unity微信小游戏"><a href="#Unity微信小游戏" class="headerlink" title="Unity微信小游戏"></a>Unity微信小游戏</h1><ol><li><p>微信截屏分享代码片段</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public override void YouMengShare(string platform, string path)</span><br><span class="line">&#123;</span><br><span class="line">    WXToTempFilePathParam wfpp = new WXToTempFilePathParam();</span><br><span class="line">    wfpp.success = (result) =&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;wfpp.success&quot;</span>);</span><br><span class="line">        ShowShareImageMenuOption shareoption = new ShowShareImageMenuOption();</span><br><span class="line">        shareoption.path = result.tempFilePath;</span><br><span class="line">        shareoption.needShowEntrance = <span class="literal">true</span>;</span><br><span class="line">        shareoption.complete = (result) =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            SDKCallBack.Instance.UMengShareResult(<span class="string">&quot;cancel&quot;</span>);</span><br><span class="line">        &#125;;</span><br><span class="line">        shareoption.success = (result) =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            SDKCallBack.Instance.UMengShareResult(<span class="string">&quot;success&quot;</span>);</span><br><span class="line">        &#125;;</span><br><span class="line">        shareoption.fail = (result) =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            SDKCallBack.Instance.UMengShareResult(<span class="string">&quot;fail|&quot;</span>+result.errMsg);</span><br><span class="line">        &#125;;</span><br><span class="line">        WX.ShowShareImageMenu(shareoption);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    WXCanvas.ToTempFilePath(wfpp);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li><li><p>抖音截屏分享代码片段</p></li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public void <span class="function"><span class="title">ShareApp</span></span>()</span><br><span class="line">&#123;</span><br><span class="line">    var fileSystemManager = TT.GetFileSystemManager();</span><br><span class="line"></span><br><span class="line">    Texture2D screenshot = ScreenCapture.CaptureScreenshotAsTexture();</span><br><span class="line"></span><br><span class="line">    // 2. 编码为PNG</span><br><span class="line">    byte[] bytes = screenshot.EncodeToPNG();</span><br><span class="line"></span><br><span class="line">    // 使用StarkFileSystemManager写入文件</span><br><span class="line">    fileSystemManager.WriteFileSync(userPath, bytes);</span><br><span class="line"></span><br><span class="line">    JsonData data = new JsonData();</span><br><span class="line">    data[<span class="string">&quot;channel&quot;</span>] = <span class="string">&quot;picture&quot;</span>;</span><br><span class="line">    JsonData extra = new JsonData();</span><br><span class="line">    JsonData picturePath = new JsonData();</span><br><span class="line">    picturePath.Add(userPath);</span><br><span class="line">    extra[<span class="string">&quot;picturePath&quot;</span>] = picturePath;</span><br><span class="line">    data[<span class="string">&quot;extra&quot;</span>] = extra;</span><br><span class="line">    TT.ShareAppMessage(data,(data)=&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log($<span class="string">&quot;Sharesucc app message: &#123;data&#125;&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    (str)=&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log($<span class="string">&quot;Sharefail app message: &#123;data&#125;&quot;</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>微信的截屏不能使用异步的截屏接口，图片显示异常。<br>抖音的截屏只能保存在ttfile:&#x2F;&#x2F;temp或者ttfile:&#x2F;&#x2F;user,要不然会报找不到文件<br>总之各有各的坑</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;Unity微信小游戏&quot;&gt;&lt;a href=&quot;#Unity微信小游戏&quot; class=&quot;headerlink&quot; title=&quot;Unity微信小游戏&quot;&gt;&lt;/a&gt;Unity微信小游戏&lt;/h1&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;微信截屏分享代码片段&lt;/p&gt;
+&lt;figure class=</summary>
+      
+    
+    
+    
+    
+    <category term="Unity微信小游戏" scheme="http://xuexuanfeng.github.io/tags/Unity%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>unity导出urp小游戏在微信开发者工具中黑屏</title>
@@ -435,28 +459,6 @@
     
     
     <category term="架构设计" scheme="http://xuexuanfeng.github.io/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>TextMeshPro中文字体的处理</title>
-    <link href="http://xuexuanfeng.github.io/2025/01/10/TextMeshPro%E4%B8%AD%E6%96%87%E5%AD%97%E4%BD%93%E7%9A%84%E5%A4%84%E7%90%86/"/>
-    <id>http://xuexuanfeng.github.io/2025/01/10/TextMeshPro%E4%B8%AD%E6%96%87%E5%AD%97%E4%BD%93%E7%9A%84%E5%A4%84%E7%90%86/</id>
-    <published>2025-01-10T15:38:21.000Z</published>
-    <updated>2025-01-10T15:40:54.800Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Unity插件工具相关"><a href="#Unity插件工具相关" class="headerlink" title="Unity插件工具相关"></a>Unity插件工具相关</h1><p>网上有很多TextMeshPro的中文处理，主要都是使用预制常用字体文件生成静态字体</p><p>这篇文章使用了动态字体，感觉很方便。</p><p><a href="https://www.bilibili.com/opus/816972383961219126">https://www.bilibili.com/opus/816972383961219126</a></p><p>字体下载git<br><a href="https://github.com/adobe-fonts/source-han-sans/tree/release">https://github.com/adobe-fonts/source-han-sans/tree/release</a></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;Unity插件工具相关&quot;&gt;&lt;a href=&quot;#Unity插件工具相关&quot; class=&quot;headerlink&quot; title=&quot;Unity插件工具相关&quot;&gt;&lt;/a&gt;Unity插件工具相关&lt;/h1&gt;&lt;p&gt;网上有很多TextMeshPro的中文处理，主要都是使用预制常用字体</summary>
-      
-    
-    
-    
-    
-    <category term="Unity插件工具相关" scheme="http://xuexuanfeng.github.io/tags/Unity%E6%8F%92%E4%BB%B6%E5%B7%A5%E5%85%B7%E7%9B%B8%E5%85%B3/"/>
     
   </entry>
   
