@@ -290,6 +290,18 @@
       Object.keys(keyObj).forEach(i => keyObj[i]())
 
       delete globalFn[key]
+    },
+
+    addGlobalFn: (key, fn, name = '') => {
+      const globalFn = window.globalFn || {}
+      if (!globalFn[key]) {
+        globalFn[key] = {}
+      }
+
+      if (name && globalFn[key][name]) return
+
+      globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+      window.globalFn = globalFn
     }
   }
 
