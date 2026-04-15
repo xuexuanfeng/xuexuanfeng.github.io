@@ -1,0 +1,169 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>unity小游戏的Addressable加载优化 | 存钱买电瓶车创业的猛男程序员</title><meta name="author" content="xuexuanfeng"><meta name="copyright" content="xuexuanfeng"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Unity微信小游戏之前使用addressable导出bundle都是一直用Addressables Analyze来比较方便的剥离出group中的共同依赖bundle，这样比较方便无脑。但是过多的bundle会导致许多加载事件浪费的http请求上面，所以我准备将进入游戏之前索要使用的bundle都打在一个整包，或者分成两三个bundle来这么做  实现方案 第一步是要找到进入游戏之前的所有加载b">
+<meta property="og:type" content="article">
+<meta property="og:title" content="unity小游戏的Addressable加载优化">
+<meta property="og:url" content="http://xuexuanfeng.github.io/2026/04/15/unity%E5%B0%8F%E6%B8%B8%E6%88%8F%E7%9A%84Addressable%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96/index.html">
+<meta property="og:site_name" content="存钱买电瓶车创业的猛男程序员">
+<meta property="og:description" content="Unity微信小游戏之前使用addressable导出bundle都是一直用Addressables Analyze来比较方便的剥离出group中的共同依赖bundle，这样比较方便无脑。但是过多的bundle会导致许多加载事件浪费的http请求上面，所以我准备将进入游戏之前索要使用的bundle都打在一个整包，或者分成两三个bundle来这么做  实现方案 第一步是要找到进入游戏之前的所有加载b">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://xuexuanfeng.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2026-04-15T07:02:39.000Z">
+<meta property="article:modified_time" content="2026-04-15T07:46:33.709Z">
+<meta property="article:author" content="xuexuanfeng">
+<meta property="article:tag" content="Unity微信小游戏">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xuexuanfeng.github.io/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://xuexuanfeng.github.io/2026/04/15/unity%E5%B0%8F%E6%B8%B8%E6%88%8F%E7%9A%84Addressable%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1922483824307707"
+     crossorigin="anonymous">
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'unity小游戏的Addressable加载优化',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-04-15 15:46:33'
+}</script><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="存钱买电瓶车创业的猛男程序员" type="application/atom+xml">
+</head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">存钱买电瓶车创业的猛男程序员</span></a><a class="nav-page-title" href="/"><span class="site-name">unity小游戏的Addressable加载优化</span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">unity小游戏的Addressable加载优化</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-04-15T07:02:39.000Z" title="Created 2026-04-15 15:02:39">2026-04-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-04-15T07:46:33.709Z" title="Updated 2026-04-15 15:46:33">2026-04-15</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Unity微信小游戏"><a href="#Unity微信小游戏" class="headerlink" title="Unity微信小游戏"></a>Unity微信小游戏</h1><pre><code>之前使用addressable导出bundle都是一直用Addressables Analyze来比较方便的剥离出group中的共同依赖bundle，这样比较方便无脑。但是过多的bundle会导致许多加载事件浪费的http请求上面，所以我准备将进入游戏之前索要使用的bundle都打在一个整包，或者分成两三个bundle来这么做
+</code></pre>
+<h2 id="实现方案"><a href="#实现方案" class="headerlink" title="实现方案"></a>实现方案</h2><ol>
+<li>第一步是要找到进入游戏之前的所有加载bundle，试过profile和event viewer，都是观察分析为主，并没有导出信息这块功能，所以我准备自己在addressable执行加载的时候记录url，然后将所有的url导出到json文件中（因为addressable不是开源的，有点玛法。如果是抖音小游戏的话可以从TTAssetBundleProviders中记录url）</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">private void <span class="function"><span class="title">BeginOperation</span></span>()</span><br><span class="line">&#123;</span><br><span class="line">    m_DownloadedBytes = 0;</span><br><span class="line">    m_RequestCompletedCallbackCalled = <span class="literal">false</span>;</span><br><span class="line">    GetLoadInfo(m_ProvideHandle, out LoadType loadType, out m_TransformedInternalId);</span><br><span class="line">    //这里获取m_ProvideHandle.Location.PrimaryKey来记录</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (loadType == LoadType.Local)</span><br><span class="line">    &#123;</span><br><span class="line">        LoadLocalBundle();</span><br><span class="line">        <span class="built_in">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (loadType == LoadType.Web)</span><br><span class="line">    &#123;</span><br><span class="line">        m_WebRequestQueueOperation = EnqueueWebRequest(m_TransformedInternalId);</span><br><span class="line">        AddBeginWebRequestHandler(m_WebRequestQueueOperation);</span><br><span class="line">        <span class="built_in">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    m_Source = BundleSource.None;</span><br><span class="line">    m_RequestOperation = null;</span><br><span class="line">    m_ProvideHandle.Complete&lt;TTAssetBundleResource&gt;(null, <span class="literal">false</span>,</span><br><span class="line">        new RemoteProviderException(string.Format(<span class="string">&quot;Invalid path in AssetBundleProvider: &#x27;&#123;0&#125;&#x27;.&quot;</span>, m_TransformedInternalId), m_ProvideHandle.Location));</span><br><span class="line">    m_Completed = <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>将记录的list中的内容保存到本地json文件之中</p>
+</li>
+<li><p>编写脚本，读取json内容，修改group信息</p>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">public static void <span class="function"><span class="title">ChangeGroupByJson</span></span>()</span><br><span class="line">&#123;</span><br><span class="line">    string fullPath = Application.dataPath + <span class="string">&quot;/../Assets/stringList.json&quot;</span>;</span><br><span class="line">    string json = File.ReadAllText(fullPath);</span><br><span class="line">    List&lt;string&gt; list = JsonConvert.DeserializeObject&lt;List&lt;string&gt;&gt;(json);</span><br><span class="line">    var settings = AddressableAssetSettingsDefaultObject.Settings;</span><br><span class="line">    <span class="keyword">if</span> (settings == null)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.LogError(<span class="string">&quot;Addressable Settings 未找到！请先创建 Addressables Settings。&quot;</span>);</span><br><span class="line">        <span class="built_in">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 1. 查找或创建目标 Group</span><br><span class="line">    AddressableAssetGroup targetGroup = settings.FindGroup(<span class="string">&quot;SecondPackage&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (targetGroup == null)</span><br><span class="line">    &#123;</span><br><span class="line">        // 创建新 Group（使用默认的 Packed Assets 模板）</span><br><span class="line">        targetGroup = settings.CreateGroup(<span class="string">&quot;SecondPackage&quot;</span>, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">false</span>, null, typeof(BundledAssetGroupSchema));</span><br><span class="line">        Debug.Log(<span class="string">&quot;已创建新 Group: SecondPackage&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 2. 遍历所有 Group 和 Entry</span><br><span class="line">    int movedCount = 0;</span><br><span class="line">    List&lt;AddressableAssetEntry&gt; entriesToMove = new List&lt;AddressableAssetEntry&gt;(); // 避免在遍历时直接修改集合</span><br><span class="line"></span><br><span class="line">    foreach (var group <span class="keyword">in</span> settings.groups)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (group == null || group == targetGroup) <span class="built_in">continue</span>; // 跳过空组和目标组本身</span><br><span class="line"></span><br><span class="line">        foreach (var item <span class="keyword">in</span> group.entries)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (item == null) <span class="built_in">continue</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (int i = 0; i &lt; list.Count; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                // 使用 BundleFileId 进行模糊匹配</span><br><span class="line">                <span class="keyword">if</span> (!string.IsNullOrEmpty(item.BundleFileId) &amp;&amp;</span><br><span class="line">                    item.BundleFileId.IndexOf(list[i], System.StringComparison.OrdinalIgnoreCase) != -1)</span><br><span class="line">                &#123;</span><br><span class="line">                    entriesToMove.Add(item);</span><br><span class="line">                    <span class="built_in">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 3. 执行移动操作</span><br><span class="line">    foreach (var entry <span class="keyword">in</span> entriesToMove)</span><br><span class="line">    &#123;</span><br><span class="line">        // 使用 CreateOrMoveEntry 最安全（已存在则移动，不存在则创建）</span><br><span class="line">        settings.CreateOrMoveEntry(entry.guid, targetGroup, <span class="literal">false</span>, <span class="literal">true</span>);</span><br><span class="line">        movedCount++;</span><br><span class="line">        Debug.Log($<span class="string">&quot;已移动 → Group: SecondPackage | Address: &#123;entry.address&#125; | BundleFileId: &#123;entry.BundleFileId&#125;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 4. 保存并标记脏</span><br><span class="line">    <span class="keyword">if</span> (movedCount &gt; 0)</span><br><span class="line">    &#123;</span><br><span class="line">        settings.SetDirty(AddressableAssetSettings.ModificationEvent.GroupSchemaModified, targetGroup, <span class="literal">true</span>);</span><br><span class="line">        EditorUtility.SetDirty(settings);</span><br><span class="line">        AssetDatabase.SaveAssets();</span><br><span class="line"></span><br><span class="line">        Debug.Log($<span class="string">&quot;完成！共移动 &#123;movedCount&#125; 个资源到 SecondPackage Group。&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log($<span class="string">&quot;未找到 BundleFileId 包含 &#x27;&#123;primaryKey&#125;&#x27; 的资源。&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实测下来抖音小游戏330个bundle合并成3个bundle之后进入有游戏的速度从八秒缩短至了5秒，效果还是很显著的。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://xuexuanfeng.github.io">xuexuanfeng</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://xuexuanfeng.github.io/2026/04/15/unity%E5%B0%8F%E6%B8%B8%E6%88%8F%E7%9A%84Addressable%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96/">http://xuexuanfeng.github.io/2026/04/15/unity%E5%B0%8F%E6%B8%B8%E6%88%8F%E7%9A%84Addressable%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Unity%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F/">Unity微信小游戏</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="next-post pull-full" href="/2026/03/30/URP%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%90%AFGPUInstance%E6%97%A0%E6%95%88%E7%9A%84%E9%97%AE%E9%A2%98/" title="URP项目开启GPUInstance无效的问题"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">URP项目开启GPUInstance无效的问题</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a href="/2024/10/16/Unity%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F%E7%9A%84bundle%E5%8A%A0%E8%BD%BD%E6%B5%81%E7%A8%8B/" title="Unity微信小游戏的bundle加载流程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-16</div><div class="title">Unity微信小游戏的bundle加载流程</div></div></a><a href="/2024/10/20/Unity%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F%E5%88%98%E6%B5%B7%E5%B1%8F%E9%80%82%E9%85%8D/" title="Unity微信小游戏刘海屏适配"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-20</div><div class="title">Unity微信小游戏刘海屏适配</div></div></a><a href="/2024/10/22/IlRuntime%E5%B0%8F%E6%B8%B8%E6%88%8F%E8%BD%AC%E6%8D%A2/" title="IlRuntime小游戏转换"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-22</div><div class="title">IlRuntime小游戏转换</div></div></a><a href="/2024/11/03/Webgl%E4%B8%8EJs%E7%9A%84%E4%BA%A4%E4%BA%92/" title="Webgl与Js的交互"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-03</div><div class="title">Webgl与Js的交互</div></div></a><a href="/2025/03/17/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F%E5%8F%8D%E7%BC%96%E8%AF%91/" title="微信小游戏反编译"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-17</div><div class="title">微信小游戏反编译</div></div></a><a href="/2025/05/08/Addressables%E5%B0%8F%E6%B8%B8%E6%88%8F%E6%94%B9%E9%80%A0/" title="Addressables小游戏改造"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-08</div><div class="title">Addressables小游戏改造</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xuexuanfeng</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">33</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xuexuanfeng/"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">炸裂的2.5次元空间</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Unity%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F"><span class="toc-number">1.</span> <span class="toc-text">Unity微信小游戏</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88"><span class="toc-number">1.1.</span> <span class="toc-text">实现方案</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/15/unity%E5%B0%8F%E6%B8%B8%E6%88%8F%E7%9A%84Addressable%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96/" title="unity小游戏的Addressable加载优化">unity小游戏的Addressable加载优化</a><time datetime="2026-04-15T07:02:39.000Z" title="Created 2026-04-15 15:02:39">2026-04-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/30/URP%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%90%AFGPUInstance%E6%97%A0%E6%95%88%E7%9A%84%E9%97%AE%E9%A2%98/" title="URP项目开启GPUInstance无效的问题">URP项目开启GPUInstance无效的问题</a><time datetime="2026-03-30T13:07:03.000Z" title="Created 2026-03-30 21:07:03">2026-03-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/27/%E5%BE%AE%E4%BF%A1%E6%8A%96%E9%9F%B3%E5%B0%8F%E6%B8%B8%E6%88%8F%E7%9A%84%E6%88%AA%E5%B1%8F%E5%88%86%E4%BA%AB/" title="微信抖音小游戏的截屏分享">微信抖音小游戏的截屏分享</a><time datetime="2026-02-27T10:36:02.000Z" title="Created 2026-02-27 18:36:02">2026-02-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/20/unity%E5%AF%BC%E5%87%BAurp%E5%B0%8F%E6%B8%B8%E6%88%8F%E5%9C%A8%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E4%B8%AD%E9%BB%91%E5%B1%8F/" title="unity导出urp小游戏在微信开发者工具中黑屏">unity导出urp小游戏在微信开发者工具中黑屏</a><time datetime="2026-01-20T13:26:20.000Z" title="Created 2026-01-20 21:26:20">2026-01-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/12/23/UniRx%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" title="UniRx使用指南">UniRx使用指南</a><time datetime="2025-12-23T12:22:33.000Z" title="Created 2025-12-23 20:22:33">2025-12-23</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By xuexuanfeng</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
