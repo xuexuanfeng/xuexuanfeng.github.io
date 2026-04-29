@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>微信好友排行榜导致textmeshpro渲染异常</title>
+      <link href="/2026/04/29/%E5%BE%AE%E4%BF%A1%E5%A5%BD%E5%8F%8B%E6%8E%92%E8%A1%8C%E6%A6%9C%E5%AF%BC%E8%87%B4textmeshpro%E6%B8%B2%E6%9F%93%E5%BC%82%E5%B8%B8/"/>
+      <url>/2026/04/29/%E5%BE%AE%E4%BF%A1%E5%A5%BD%E5%8F%8B%E6%8E%92%E8%A1%8C%E6%A6%9C%E5%AF%BC%E8%87%B4textmeshpro%E6%B8%B2%E6%9F%93%E5%BC%82%E5%B8%B8/</url>
+      
+        <content type="html"><![CDATA[<h1 id="微信好友排行榜导致textmeshpro渲染异常"><a href="#微信好友排行榜导致textmeshpro渲染异常" class="headerlink" title="微信好友排行榜导致textmeshpro渲染异常"></a>微信好友排行榜导致textmeshpro渲染异常</h1><pre><code>工作开发中遇到了一个神奇的问题，在微信小游戏中打开好友排行榜之后游戏内的所有textmeshpro的uv显示会异常，类似于这个网页提到的问题：</code></pre><p><a href="https://gitee.com/WondrousWisdomcard/unity3d-homework/tree/master/Homework06">链接地址</a></p><p><img src="/img/20260429.jpg" alt="游戏内截图"></p><pre><code>但是无意中发现当打开gm面板的时候渲染异常就消失了，所以模仿了下gm面板的代码，写了个脚本挂在到显示好友榜的rawimage上面就好了，所实话什么原理我也搞不懂。</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class FriendRankFix : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    private Rect _windowRect = new Rect(-50, -100, 0, 0);</span><br><span class="line">    // Start is called before the first frame update</span><br><span class="line">    void <span class="function"><span class="title">Start</span></span>()</span><br><span class="line">    &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // Update is called once per frame</span><br><span class="line">    void <span class="function"><span class="title">Update</span></span>()</span><br><span class="line">    &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void <span class="function"><span class="title">OnGUI</span></span>()</span><br><span class="line">    &#123;</span><br><span class="line">        GUI.Window(0, this._windowRect, this.ShrinkGUIWindow, <span class="string">&quot;DEBUGGER&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void ShrinkGUIWindow(int windowId)</span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Unity微信小游戏 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Localization老项目的自动化适配</title>
       <link href="/2026/04/16/Localization%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E8%87%AA%E5%8A%A8%E5%8C%96%E9%80%82%E9%85%8D/"/>
       <url>/2026/04/16/Localization%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E8%87%AA%E5%8A%A8%E5%8C%96%E9%80%82%E9%85%8D/</url>

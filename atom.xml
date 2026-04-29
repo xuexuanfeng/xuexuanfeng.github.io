@@ -6,7 +6,7 @@
   <link href="http://xuexuanfeng.github.io/atom.xml" rel="self"/>
   
   <link href="http://xuexuanfeng.github.io/"/>
-  <updated>2026-04-17T16:08:16.903Z</updated>
+  <updated>2026-04-29T09:43:23.477Z</updated>
   <id>http://xuexuanfeng.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>微信好友排行榜导致textmeshpro渲染异常</title>
+    <link href="http://xuexuanfeng.github.io/2026/04/29/%E5%BE%AE%E4%BF%A1%E5%A5%BD%E5%8F%8B%E6%8E%92%E8%A1%8C%E6%A6%9C%E5%AF%BC%E8%87%B4textmeshpro%E6%B8%B2%E6%9F%93%E5%BC%82%E5%B8%B8/"/>
+    <id>http://xuexuanfeng.github.io/2026/04/29/%E5%BE%AE%E4%BF%A1%E5%A5%BD%E5%8F%8B%E6%8E%92%E8%A1%8C%E6%A6%9C%E5%AF%BC%E8%87%B4textmeshpro%E6%B8%B2%E6%9F%93%E5%BC%82%E5%B8%B8/</id>
+    <published>2026-04-29T09:08:27.000Z</published>
+    <updated>2026-04-29T09:43:23.477Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="微信好友排行榜导致textmeshpro渲染异常"><a href="#微信好友排行榜导致textmeshpro渲染异常" class="headerlink" title="微信好友排行榜导致textmeshpro渲染异常"></a>微信好友排行榜导致textmeshpro渲染异常</h1><pre><code>工作开发中遇到了一个神奇的问题，在微信小游戏中打开好友排行榜之后游戏内的所有textmeshpro的uv显示会异常，类似于这个网页提到的问题：</code></pre><p><a href="https://gitee.com/WondrousWisdomcard/unity3d-homework/tree/master/Homework06">链接地址</a></p><p><img src="/img/20260429.jpg" alt="游戏内截图"></p><pre><code>但是无意中发现当打开gm面板的时候渲染异常就消失了，所以模仿了下gm面板的代码，写了个脚本挂在到显示好友榜的rawimage上面就好了，所实话什么原理我也搞不懂。</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class FriendRankFix : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    private Rect _windowRect = new Rect(-50, -100, 0, 0);</span><br><span class="line">    // Start is called before the first frame update</span><br><span class="line">    void <span class="function"><span class="title">Start</span></span>()</span><br><span class="line">    &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // Update is called once per frame</span><br><span class="line">    void <span class="function"><span class="title">Update</span></span>()</span><br><span class="line">    &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void <span class="function"><span class="title">OnGUI</span></span>()</span><br><span class="line">    &#123;</span><br><span class="line">        GUI.Window(0, this._windowRect, this.ShrinkGUIWindow, <span class="string">&quot;DEBUGGER&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void ShrinkGUIWindow(int windowId)</span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;微信好友排行榜导致textmeshpro渲染异常&quot;&gt;&lt;a href=&quot;#微信好友排行榜导致textmeshpro渲染异常&quot; class=&quot;headerlink&quot; title=&quot;微信好友排行榜导致textmeshpro渲染异常&quot;&gt;&lt;/a&gt;微信好友排行榜导致textm</summary>
+      
+    
+    
+    
+    
+    <category term="Unity微信小游戏" scheme="http://xuexuanfeng.github.io/tags/Unity%E5%BE%AE%E4%BF%A1%E5%B0%8F%E6%B8%B8%E6%88%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>Localization老项目的自动化适配</title>
@@ -435,28 +457,6 @@
     
     
     <category term="架构设计" scheme="http://xuexuanfeng.github.io/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unity场景物体贴地操作</title>
-    <link href="http://xuexuanfeng.github.io/2025/03/19/Unity%E5%9C%BA%E6%99%AF%E7%89%A9%E4%BD%93%E8%B4%B4%E5%9C%B0%E6%93%8D%E4%BD%9C/"/>
-    <id>http://xuexuanfeng.github.io/2025/03/19/Unity%E5%9C%BA%E6%99%AF%E7%89%A9%E4%BD%93%E8%B4%B4%E5%9C%B0%E6%93%8D%E4%BD%9C/</id>
-    <published>2025-03-19T07:50:24.000Z</published>
-    <updated>2025-03-19T07:54:26.667Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Unity场景物体贴地操作"><a href="#Unity场景物体贴地操作" class="headerlink" title="Unity场景物体贴地操作"></a>Unity场景物体贴地操作</h1><p>以前会专门为底边开发一个物体贴地的工具，但unity其实编辑器内原生自带了这个功能，选中物体按下Ctrl+Shift,场景物体中间会出现一个灰色的小方框，拖动物体编辑器就会自动处理贴地的效果</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;Unity场景物体贴地操作&quot;&gt;&lt;a href=&quot;#Unity场景物体贴地操作&quot; class=&quot;headerlink&quot; title=&quot;Unity场景物体贴地操作&quot;&gt;&lt;/a&gt;Unity场景物体贴地操作&lt;/h1&gt;&lt;p&gt;以前会专门为底边开发一个物体贴地的工具，但unity</summary>
-      
-    
-    
-    
-    
-    <category term="UnityEditor小技巧" scheme="http://xuexuanfeng.github.io/tags/UnityEditor%E5%B0%8F%E6%8A%80%E5%B7%A7/"/>
     
   </entry>
   
